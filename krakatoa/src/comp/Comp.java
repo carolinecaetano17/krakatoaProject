@@ -41,8 +41,8 @@ public class Comp {
            }
            report = new PrintWriter(reportStream);
            
- 
-
+           /*Check if file is open*/
+           
            file = new File(args[0]);
            if ( ! file.exists() || ! file.canRead() ) {
                String msg = "Either the file " + args[0] + " does not exist or it cannot be read";

@@ -1,9 +1,19 @@
 package ast;
 
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
 import java.util.*;
+
 import comp.CompilationError;
 
-public class Program {
+public class Program extends ASTNode{
+	
+	private ArrayList<KraClass> classList;
+	private ArrayList<MetaobjectCall> metaobjectCallList;
+	ArrayList<CompilationError> compilationErrorList;
 
 	public Program(ArrayList<KraClass> classList, ArrayList<MetaobjectCall> metaobjectCallList, 
 			       ArrayList<CompilationError> compilationErrorList) {
@@ -37,11 +47,4 @@ public class Program {
 		return compilationErrorList;
 	}
 
-	
-	private ArrayList<KraClass> classList;
-	private ArrayList<MetaobjectCall> metaobjectCallList;
-	
-	ArrayList<CompilationError> compilationErrorList;
-
-	
 }

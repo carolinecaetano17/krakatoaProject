@@ -5,8 +5,6 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-abstract public class Statement extends ASTNode{
-
-	abstract public void genC(PW pw);
+public class BreakStatement {
 
 }

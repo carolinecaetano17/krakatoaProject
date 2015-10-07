@@ -1,6 +1,11 @@
 package ast;
 
-abstract public class Type {
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
+abstract public class Type extends ASTNode{
 
     public Type( String name ) {
         this.name = name;

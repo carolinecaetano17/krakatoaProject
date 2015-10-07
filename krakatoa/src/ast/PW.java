@@ -1,9 +1,14 @@
 package ast;
 
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
 import java.io.*;
 
 
-public class PW {
+public class PW extends ASTNode{
    
    public void add() {
       currentIndent += step;

@@ -3,6 +3,11 @@
  */
 package ast;
 
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
 import java.util.ArrayList;
 
 /** This class represents a metaobject call as <code>{@literal @}ce(...)</code> in <br>
@@ -16,7 +21,7 @@ import java.util.ArrayList;
    @author José
    
  */
-public class MetaobjectCall {
+public class MetaobjectCall extends ASTNode{
 
 	public MetaobjectCall(String name, ArrayList<Object> paramList) {
 		this.name = name;

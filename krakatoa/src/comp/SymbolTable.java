@@ -1,5 +1,10 @@
 package comp;
 
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
 import java.util.*;
 
 import ast.*;
