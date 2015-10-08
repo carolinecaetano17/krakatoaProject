@@ -5,6 +5,8 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-public class BreakStatement {
-
+public class BreakStatement extends Statement {
+	public void genC(PW pw){
+		
+	}
 }

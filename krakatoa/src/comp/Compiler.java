@@ -302,16 +302,35 @@ public class Compiler {
 
 	private void localDec() {
 		// LocalDec ::= Type IdList ";"
-
+			
 		Type type = type();
 		if ( lexer.token != Symbol.IDENT ) signalError.show("Identifier expected");
+
 		Variable v = new Variable(lexer.getStringValue(), type);
+		
+		//Semantic check
+		//Check if variable was already declared inside the current method
+		if(this.currentMethod.varExist(v)) signalError.show("Variable " + lexer.getStringValue() + " already exists" );
+		else{
+			//Building AST
+			this.currentMethod.addElement(v);
+		}
+		
 		lexer.nextToken();
 		while (lexer.token == Symbol.COMMA) {
 			lexer.nextToken();
 			if ( lexer.token != Symbol.IDENT )
 				signalError.show("Identifier expected");
 			v = new Variable(lexer.getStringValue(), type);
+			
+			//Semantic check
+			//Check if variable was already declared inside the current method
+			if(this.currentMethod.varExist(v)) signalError.show("Variable " + lexer.getStringValue() + " already exists" );
+			else{
+				//Building AST
+				this.currentMethod.addElement(v);
+			}
+			
 			lexer.nextToken();
 		}
 	}
@@ -442,12 +461,14 @@ public class Compiler {
 			ifStatement();
 			break;
 		case BREAK:
+			//Returns a BreakStatement that extends Statement
 			breakStatement();
 			break;
 		case WHILE:
 			whileStatement();
 			break;
 		case SEMICOLON:
+			//Returns a NullStatement that extends Statement
 			nullStatement();
 			break;
 		case LEFTCURBRACKET:
@@ -613,8 +634,8 @@ public class Compiler {
 		return b;
 	}
 
-	private NullExpr nullStatement() {
-		NullExpr n = new NullExpr();
+	private NullStatement nullStatement() {
+		NullStatement n = new NullStatement();
 		lexer.nextToken();
 		
 		return n;

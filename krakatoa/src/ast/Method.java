@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /* Authors:
  * Caroline Pessoa Caetano - 408247
@@ -13,6 +14,7 @@ public class Method extends ASTNode {
 	private ParamList paramList;
 	private ArrayList<Statement> statementList;
 	private String qualifier;
+	private LocalVariableList variableList;
 	
 	public Method(Type type, String name, String qualifier) {
 		super();
@@ -21,6 +23,7 @@ public class Method extends ASTNode {
 		this.paramList = new ParamList();
 		this.statementList = new ArrayList<Statement>();
 		this.qualifier = qualifier;
+		this.variableList = new LocalVariableList();
 	}
 	public String getQualifier() {
 		return qualifier;
@@ -53,4 +56,23 @@ public class Method extends ASTNode {
 		this.statementList = statementList;
 	}
 	
+	 public void addElement(Variable v) {
+		 this.variableList.addElement(v);
+	 }
+
+	public Iterator<Variable> elements() {
+		return this.variableList.elements();
+	}
+
+	public int getSize() {
+		return this.variableList.getSize();
+	}
+	
+	public boolean varExist(Variable v){
+		if(this.variableList.getList().contains(v)){
+			return true;
+		}
+		return false;
+	}
+
 }
