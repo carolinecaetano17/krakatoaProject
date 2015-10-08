@@ -209,6 +209,12 @@ public class Compiler {
 			signalError.show("public/private or \"}\" expected");
 		lexer.nextToken();
 		
+		//Clear Instance Variables
+		symbolTable.removeLocalIdent();
+		
+		//This Class is not the current Class anymore cause its compilation is done
+		this.currentClass = null;
+		
 		newClass.setInstanceVariableList(instanceVariableList);
 		return newClass;
 	}
@@ -265,7 +271,7 @@ public class Compiler {
 		return false;
 	}
 
-	private Method methodDec(Type type, String name, Symbol qualifier) {//Building AST DO NOT KNOW YET
+	private Method methodDec(Type type, String name, Symbol qualifier) {
 		/*
 		 * MethodDec ::= Qualifier Return Id "("[ FormalParamDec ] ")" "{"
 		 *                StatementList "}"
@@ -296,6 +302,9 @@ public class Compiler {
 		if ( lexer.token != Symbol.RIGHTCURBRACKET ) signalError.show("} expected");
 
 		lexer.nextToken();
+		
+		//Clear Method Scope
+		this.currentMethod = null;
 		
 		return newMethod;
 	}
