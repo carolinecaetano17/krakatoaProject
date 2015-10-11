@@ -8,70 +8,79 @@ import java.util.ArrayList;
  */
 
 public class KraClass extends Type {
-	
-   public KraClass( String name ) {
-      super(name);
-      publicMethodList = new ArrayList<Method>();
-      privateMethodList = new ArrayList<Method>();
-   }
+    private String name;
+    private KraClass superclass;
+    private InstanceVariableList instanceVariableList;
+    private ArrayList<Method> publicMethodList;
+    private ArrayList<Method> privateMethodList;
 
-   public String getCname() {
-      return getName();
-   }
-   
-   private String name;
-   private KraClass superclass;
-   private InstanceVariableList instanceVariableList;
-   private ArrayList<Method> publicMethodList;
-   private ArrayList<Method> privateMethodList;
-   // métodos públicos get e set para obter e iniciar as variáveis acima,
-   // entre outros métodos
-   
-   	public KraClass getSuperclass() {
-   		return superclass;
-	}
-	
-	public void setSuperclass(KraClass superclass) {
-		this.superclass = superclass;
-	}
+    private boolean isFinal;
 
-	public String getName() {
-		return name;
-	}
+    public KraClass(String name, boolean isFinal) {
+        super(name);
+        this.publicMethodList = new ArrayList<Method>();
+        this.privateMethodList = new ArrayList<Method>();
+        this.isFinal = isFinal;
+        this.superclass = null;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getCname() {
+        return getName();
+    }
+    // mï¿½todos pï¿½blicos get e set para obter e iniciar as variï¿½veis acima,
+    // entre outros mï¿½todos
 
-	public InstanceVariableList getInstanceVariableList() {
-		return instanceVariableList;
-	}
+    public KraClass getSuperclass() {
+        return superclass;
+    }
 
-	public void setInstanceVariableList(InstanceVariableList instanceVariableList) {
-		this.instanceVariableList = instanceVariableList;
-	}
-	public ArrayList<Method> getPublicMethodList() {
-		return publicMethodList;
-	}
+    public void setSuperclass(KraClass superclass) {
+        this.superclass = superclass;
+    }
 
-	public void setPublicMethodList(ArrayList<Method> publicMethodList) {
-		this.publicMethodList = publicMethodList;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public ArrayList<Method> getPrivateMethodList() {
-		return privateMethodList;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPrivateMethodList(ArrayList<Method> privateMethodList) {
-		this.privateMethodList = privateMethodList;
-	}
-	public void addMethod(Method newMethod){
-		
-		if(newMethod.getQualifier() == "private"){
-			this.privateMethodList.add(newMethod);
-		}else if(newMethod.getQualifier() == "public"){
-			this.publicMethodList.add(newMethod);
-		}
-		
-	}
+    public InstanceVariableList getInstanceVariableList() {
+        return instanceVariableList;
+    }
+
+    public void setInstanceVariableList(InstanceVariableList instanceVariableList) {
+        this.instanceVariableList = instanceVariableList;
+    }
+
+    public ArrayList<Method> getPublicMethodList() {
+        return publicMethodList;
+    }
+
+    public void setPublicMethodList(ArrayList<Method> publicMethodList) {
+        this.publicMethodList = publicMethodList;
+    }
+
+    public ArrayList<Method> getPrivateMethodList() {
+        return privateMethodList;
+    }
+
+    public void setPrivateMethodList(ArrayList<Method> privateMethodList) {
+        this.privateMethodList = privateMethodList;
+    }
+
+    public void addMethod(Method newMethod) {
+
+        if (newMethod.getQualifier() == "private") {
+            this.privateMethodList.add(newMethod);
+        } else if (newMethod.getQualifier() == "public") {
+            this.publicMethodList.add(newMethod);
+        }
+
+    }
+
+    public boolean isFinal() {
+        return isFinal;
+    }
 }

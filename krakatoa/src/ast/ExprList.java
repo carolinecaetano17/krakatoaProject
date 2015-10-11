@@ -1,6 +1,6 @@
 package ast;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class ExprList {
 
@@ -8,16 +8,16 @@ public class ExprList {
         exprList = new ArrayList<Expr>();
     }
 
-    public void addElement( Expr expr ) {
+    public void addElement(Expr expr) {
         exprList.add(expr);
     }
 
-    public void genC( PW pw ) {
+    public void genC(PW pw) {
 
         int size = exprList.size();
-        for ( Expr e : exprList ) {
-        	e.genC(pw, false);
-            if ( --size > 0 )
+        for (Expr e : exprList) {
+            e.genC(pw, false);
+            if (--size > 0)
                 pw.print(", ");
         }
     }

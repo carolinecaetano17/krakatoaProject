@@ -5,9 +5,9 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-abstract public class Type extends ASTNode{
+abstract public class Type extends ASTNode {
 
-    public Type( String name ) {
+    public Type(String name) {
         this.name = name;
     }
 

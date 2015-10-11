@@ -1,0 +1,42 @@
+IfStat::= “if” “(” Expression “)” Statement [ “else” Statement ]
+WhileStat::= “while” “(” Expression “)” Statement
+ReturnStat::= “return” Expression
+ReadStat::= “read” “(” LeftValue { “,” LeftValue } “)”
+LeftValue::= [ (“this” | Id ) “.” ] Id
+WriteStat::= “write” “(” ExpressionList “)”
+CompStatement::= “{” { Statement } “}”
+
+PrimaryExpr::= “super” “.” Id “(” [ ExpressionList ] “)” |
+                Id |
+                Id “.” Id |
+                Id “.” Id “(” [ ExpressionList ] ”)” |
+                Id “.” Id “.” Id “(” [ ExpressionList ] “)” |
+                “this” |
+                “this” “.” Id |
+                “this” ”.” Id “(” [ ExpressionList ] “)” |
+                “this” ”.” Id “.” Id “(” [ ExpressionList ] “)”
+
+Busca por métodos sempre na ordem private -> public -> public das superclasses.
+
+vars locais e de classe podem ter nomes iguais, já que os acessos são diferentes
+(this.nome para var de classe, sem this. para local). Ordem de busca: local -> classe
+
+var static só pode ser acessado por método static, por meio de className.var
+
+método static pode ser public ou private. só pode chamar outros métodos static.
+this não pode ser usado em static method.
+super não pode ser usado em static method.
+método static private pode ser acessado de qqr tipo de método (static ou nao)
+da propria classe
+
+BreakStatement somente em while, checar o resto.
+
+Em MethodDec, checar todos os statements recebidos, procurando por um de return.
+Checar cada return encontrado por compatibilidade de tipos. (mesma checagem do assignment)
+
+IDList em read só pode ter objetos do tipo int ou string. Ordem de busca: local->parameter->static->instance
+Write também só pode int ou String.
+
+Expression dentro dos parênteses do if tem que ser booleantype
+
+expression dentro dos parenteses do while tbm tem que ser boolean
