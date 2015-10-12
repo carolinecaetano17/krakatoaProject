@@ -17,7 +17,8 @@ public class Method extends ASTNode {
     private LocalVariableList variableList;
 
     boolean isStatic, isFinal;
-
+    public Method(String name){ this.name = name;}
+    
     public Method(Type type, String name, String qualifier, boolean isStatic, boolean isFinal) {
         super();
         this.type = type;

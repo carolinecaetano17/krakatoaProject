@@ -15,6 +15,8 @@ public class KraClass extends Type {
     private ArrayList<Method> privateMethodList;
 
     private boolean isFinal;
+    
+    public KraClass(String name){super(name);}
 
     public KraClass(String name, boolean isFinal) {
         super(name);

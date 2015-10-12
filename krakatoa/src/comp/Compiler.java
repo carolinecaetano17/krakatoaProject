@@ -915,8 +915,8 @@ public class Compiler {
                 KraClass superHelper = this.currentClass.getSuperclass();
                 ArrayList<Method> privateHelper;
                 ArrayList<Method> publicHelper;
-                Method desiredM;
-                KraClass desiredC;
+                Method desiredM = new Method("NotAMethod");
+                KraClass desiredC = new KraClass("NotAKraClass");
                 int i;
                 
                 while(!find && (superHelper != null)){
@@ -952,11 +952,16 @@ public class Compiler {
                 	signalError.show("Method " + messageName + " was not found!");
                 }
                 
-                /*Needs to compare parameters type with the paramlist in the desired method*/
-                
                 lexer.nextToken();
                 exprList = realParameters();
+                
+                if(find){
+                	checkParams(desiredM, exprList);
+                	return new MessageSendToSuper(desiredC,this.currentClass,desiredM);
+                }
+               
                 break;
+                
             case IDENT:
             /*
           	 * PrimaryExpr ::=  
@@ -1059,6 +1064,24 @@ public class Compiler {
                 signalError.show("Expression expected");
         }
         return null;
+    }
+    
+    private void checkParams(Method desiredM, ExprList exprList){
+    	int i = 0;
+    	ParamList paramList = desiredM.getParamList();
+    	ArrayList<Variable> params = paramList.getParamList(); 
+    	ArrayList<Expr> exprs = exprList.getExprList();
+    	while(i < params.size() && i < exprs.size()){
+    		if(params.get(i).getType() != exprs.get(i).getType()){
+    			int index = i + 1;
+    			signalError.show("Method " + desiredM.getName() + " : the " + index + "th parameter has the wrong type" );
+    		}
+    		i++;
+    	}
+    	
+    	if(i != params.size() || i != exprs.size()){
+    		signalError.show("Method " + desiredM.getName() + " : received the wrong number of parameters");
+    	}
     }
 
     private LiteralInt literalInt() {

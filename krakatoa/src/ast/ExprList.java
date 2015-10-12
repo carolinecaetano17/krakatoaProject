@@ -1,8 +1,15 @@
 package ast;
 
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
 import java.util.ArrayList;
 
 public class ExprList {
+	
+    private ArrayList<Expr> exprList;
 
     public ExprList() {
         exprList = new ArrayList<Expr>();
@@ -22,6 +29,8 @@ public class ExprList {
         }
     }
 
-    private ArrayList<Expr> exprList;
+	public ArrayList<Expr> getExprList() {
+		return exprList;
+	}
 
 }
