@@ -1,4 +1,4 @@
-IfStat::= “if” “(” Expression “)” Statement [ “else” Statement ]
+﻿IfStat::= “if” “(” Expression “)” Statement [ “else” Statement ]
 WhileStat::= “while” “(” Expression “)” Statement
 ReturnStat::= “return” Expression
 ReadStat::= “read” “(” LeftValue { “,” LeftValue } “)”
@@ -40,3 +40,5 @@ Write também só pode int ou String.
 Expression dentro dos parênteses do if tem que ser booleantype
 
 expression dentro dos parenteses do while tbm tem que ser boolean
+
+checar compatibilidade dos tipos dos parametros

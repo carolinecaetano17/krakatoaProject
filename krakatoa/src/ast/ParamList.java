@@ -8,6 +8,8 @@ package ast;
 import java.util.*;
 
 public class ParamList {
+	
+	private ArrayList<Variable> paramList;
 
     public ParamList() {
        paramList = new ArrayList<Variable>();
@@ -25,6 +27,10 @@ public class ParamList {
         return paramList.size();
     }
 
-    private ArrayList<Variable> paramList;
+	public ArrayList<Variable> getParamList() {
+		return paramList;
+	}
+
+    
 
 }
