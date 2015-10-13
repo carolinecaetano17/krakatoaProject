@@ -537,33 +537,37 @@ public class Compiler {
                 st = assignExprLocalDec();
                 break;
             case RETURN:
-                st = returnStatement();
+            	/*ERROR ALL DOWN*/
+                //st = returnStatement();
                 break;
             case READ:
-                st = readStatement();
+                //st = readStatement();
                 break;
             case WRITE:
-                st = writeStatement();
+                //st = writeStatement();
                 break;
             case WRITELN:
-                st = writelnStatement();
+                //st = writelnStatement();
                 break;
             case IF:
-                st = ifStatement();
+            	/*ERROR*/
+                //st = ifStatement();
                 break;
             case BREAK:
                 //Returns a BreakStatement that extends Statement
                 st = breakStatement();
                 break;
             case WHILE:
-                st = whileStatement();
+            	/*ERROR*/
+                //st = whileStatement();
                 break;
             case SEMICOLON:
                 //Returns a NullStatement that extends Statement
                 st = nullStatement();
                 break;
             case LEFTCURBRACKET:
-                st = compositeStatement();
+            	/*ERROR*/
+                //st = compositeStatement();
                 break;
             default:
                 signalError.show("Statement expected");
@@ -573,6 +577,7 @@ public class Compiler {
 
     /* AssignExprLocalDec ::= Expression [ "=" Expression ] | LocalDec
        LocalDec ::= Type IdList ";" */
+    /*ERROR*/
     private Statement assignExprLocalDec() {
         if (lexer.token == Symbol.INT || lexer.token == Symbol.BOOLEAN
                 || lexer.token == Symbol.STRING ||
@@ -595,6 +600,8 @@ public class Compiler {
                     signalError.show("Trying to assign different basic types.");
 
                 //If not, do class checks
+                /*ERROR*/
+                /*
                 if (left.getType() instanceof ClassType) {
                     Type l = left.getType();
                     Type r = left.getType();
@@ -610,18 +617,24 @@ public class Compiler {
                         if (!isSubClass)
                             signalError.show("Trying to assign incompatible class types.");
                     }
-                }
+                }*/
 
                 if (lexer.token != Symbol.SEMICOLON)
                     signalError.show("';' expected", true);
                 else
                     lexer.nextToken();
             }
-            if (right != null)
-                return new CompositeStatement(new CompositeExpr(left, Symbol.ASSIGN, right));
-            else
-                return new ExprStatement(left);
+            /*ERROR*/
+            //if (right != null)
+            	/*ERROR*/
+                //return new CompositeStatement(new CompositeExpr(left, Symbol.ASSIGN, right));
+            	/*ERROR*/
+            //else
+            	/*ERROR*/
+                //return new ExprStatement(left);
         }
+        /*ERROR IT MUST GO*/
+        return null;
     }
 
     private ExprList realParameters() {
@@ -903,63 +916,63 @@ public class Compiler {
                     lexer.nextToken();
                 if (lexer.token != Symbol.IDENT)
                     signalError.show("Identifier expected");
-                
-                /*
-                 * para fazer as conferencias semanticas, procure por 'messageName'
-    			 * na superclasse/superclasse da superclasse etc
-    			 */
-                
-                messageName = lexer.getStringValue();
-                
-                boolean find = false;
-                KraClass superHelper = this.currentClass.getSuperclass();
-                ArrayList<Method> privateHelper;
-                ArrayList<Method> publicHelper;
-                Method desiredM = new Method("NotAMethod");
-                KraClass desiredC = new KraClass("NotAKraClass");
-                int i;
-                
-                while(!find && (superHelper != null)){
-                	//Try to find messageName
-                	privateHelper = superHelper.getPrivateMethodList();
-                	publicHelper = superHelper.getPublicMethodList();
-                	
-                	for (Method privateM : privateHelper) {
-                		if(messageName.equals(privateM.getName())){
-                			desiredM = privateM;
-                			desiredC = superHelper;
-                			find = true;
-                			break;
-                		}
-                	}
-                	
-                	if(!find){
-                		for (Method publicM : publicHelper) {
-                    		if(messageName.equals(publicM.getName())){
-                    			desiredM = publicM;
-                    			desiredC = superHelper;
-                    			find = true;
-                    			break;
-                    		}
-                    	}
-                	}
-                	
-                	superHelper = superHelper.getSuperclass();
-                	
+                else{
+	                /*
+	                 * para fazer as conferencias semanticas, procure por 'messageName'
+	    			 * na superclasse/superclasse da superclasse etc
+	    			 */
+	                
+	                messageName = lexer.getStringValue();
+	                
+	                boolean find = false;
+	                KraClass superHelper = this.currentClass.getSuperclass();
+	                ArrayList<Method> privateHelper;
+	                ArrayList<Method> publicHelper;
+	                Method desiredM = new Method("NotAMethod");
+	                KraClass desiredC = new KraClass("NotAKraClass");
+	                int i;
+	                
+	                while(!find && (superHelper != null)){
+	                	//Try to find messageName
+	                	privateHelper = superHelper.getPrivateMethodList();
+	                	publicHelper = superHelper.getPublicMethodList();
+	                	
+	                	for (Method privateM : privateHelper) {
+	                		if(messageName.equals(privateM.getName())){
+	                			desiredM = privateM;
+	                			desiredC = superHelper;
+	                			find = true;
+	                			break;
+	                		}
+	                	}
+	                	
+	                	if(!find){
+	                		for (Method publicM : publicHelper) {
+	                    		if(messageName.equals(publicM.getName())){
+	                    			desiredM = publicM;
+	                    			desiredC = superHelper;
+	                    			find = true;
+	                    			break;
+	                    		}
+	                    	}
+	                	}
+	                	
+	                	superHelper = superHelper.getSuperclass();
+	                	
+	                }
+	                
+	                if(!find){
+	                	signalError.show("Method " + messageName + " was not found!");
+	                }
+	                
+	                lexer.nextToken();
+	                exprList = realParameters();
+	                
+	                if(find){
+	                	checkParams(desiredM, exprList);
+	                	return new MessageSendToSuper(desiredC,this.currentClass,desiredM);
+	                }
                 }
-                
-                if(!find){
-                	signalError.show("Method " + messageName + " was not found!");
-                }
-                
-                lexer.nextToken();
-                exprList = realParameters();
-                
-                if(find){
-                	checkParams(desiredM, exprList);
-                	return new MessageSendToSuper(desiredC,this.currentClass,desiredM);
-                }
-               
                 break;
                 
             case IDENT:
@@ -976,7 +989,16 @@ public class Compiler {
                 if (lexer.token != Symbol.DOT) {
                     // Id
                     // retorne um objeto da ASA que representa um identificador
+                	Variable helperVar = symbolTable.getLocalVar(firstId);
+                	
+                	if(helperVar != null){
+                		return new IdentifierExpr(helperVar);
+                	}else
+                		signalError.show("The identifier " + firstId + " was not found!");
+                	
                     return null;
+                
+                    /*GET BACK HERE*/
                 } else { // Id "."
                     lexer.nextToken(); // coma o "."
                     if (lexer.token != Symbol.IDENT) {
@@ -988,10 +1010,10 @@ public class Compiler {
                         if (lexer.token == Symbol.DOT) {
                             // Id "." Id "." Id "(" [ ExpressionList ] ")"
                         /*
-                         * se o compilador permite variaveis estÃ¡ticas, Ã¡ possÃ­vel
-						 * ter esta opÃ§Ã£o, como
+                         * se o compilador permite variaveis estáticas, é possível
+						 * ter esta opção, como
 						 *     Clock.currentDay.setDay(12);
-						 * Contudo, se variÃ¡veis estÃ¡ticas nÃ£o estiver nas especificacÃµes,
+						 * Contudo, se variáveis estáticas não estiver nas especifições,
 						 * sinalize um erro neste ponto.
 						 */
                             lexer.nextToken();
