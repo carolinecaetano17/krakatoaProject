@@ -82,6 +82,10 @@ public class Method extends ASTNode {
     public int getSize() {
         return this.variableList.getSize();
     }
+    
+    public int getParamListSize() {
+        return this.paramList.getSize();
+    }
 
     public boolean isStatic() {
         return isStatic;

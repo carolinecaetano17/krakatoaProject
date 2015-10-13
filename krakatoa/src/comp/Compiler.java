@@ -64,7 +64,7 @@ public class Compiler {
                 ArrayList<Method> methods = kc.getPublicMethodList();
                 for (Method m : methods) {
                     if (m.getName().equals("run")) {
-                        if (m.getParamList().getSize() == 0) {
+                        if (m.getParamListSize() == 0) {
                             return program;
                         }
                     }
