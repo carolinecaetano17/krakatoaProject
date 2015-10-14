@@ -1,17 +1,21 @@
 package ast;
 
-/**
- * Created by hsq on 10/11/15.
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
  */
+
+import java.util.ArrayList;
+
 public class CompositeStatement extends Statement {
-    public CompositeStatement(Expr compositeExpr) {
-        this.compExpr = compositeExpr;
+    private ArrayList<Statement> statementList;
+
+    public CompositeStatement(ArrayList<Statement> stmts) {
+        this.statementList = stmts;
     }
 
-    @Override
+
     public void genC(PW pw) {
-        this.compExpr.genC(pw, false);
-    }
 
-    private Expr compExpr;
+    }
 }
