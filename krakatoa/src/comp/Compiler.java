@@ -45,7 +45,7 @@ public class Compiler {
                 metaobjectCallList.add(metaobjectCall());
             }
 
-            KraClass aux =classDec();
+            KraClass aux = classDec();
             kraClassList.add(aux);
 
             while (lexer.token == Symbol.CLASS || lexer.token == Symbol.FINAL)
@@ -55,24 +55,25 @@ public class Compiler {
                 signalError.show("End of file expected");
             }
 
-        } catch (RuntimeException e) {
-            // if there was an exception, there is a compilation signalError
-        }
-
-        //Checks the program to see if there is a Program class, with a parameterless method run
-        for (KraClass kc : kraClassList) {
-            if (kc.getName().equals("Program")) {
-                ArrayList<Method> methods = kc.getPublicMethodList();
-                for (Method m : methods) {
-                    if (m.getName().equals("run")) {
-                        if (m.getParamListSize() == 0) {
-                            return program;
+            //Checks the program to see if there is a Program class, with a parameterless method run
+            for (KraClass kc : kraClassList) {
+                if (kc.getName().equals("Program")) {
+                    ArrayList<Method> methods = kc.getPublicMethodList();
+                    for (Method m : methods) {
+                        if (m.getName().equals("run")) {
+                            if (m.getParamListSize() == 0) {
+                                return program;
+                            }
                         }
                     }
                 }
             }
+            signalError.show("No class Program with a public, parameterless method called run found.");
+
+        } catch (Exception e) {
+            // if there was an exception, there is a compilation signalError
         }
-        signalError.show("No class Program with a public, parameterless method called run found.");
+
         return program;
     }
 
@@ -1190,7 +1191,7 @@ public class Compiler {
                 }
                 break;
             default:
-                signalError.show("Expression expected");
+                //signalError.show("Expression expected");
         }
         return null;
     }
