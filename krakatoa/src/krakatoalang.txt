@@ -1,12 +1,4 @@
-﻿IfStat::= “if” “(” Expression “)” Statement [ “else” Statement ]
-WhileStat::= “while” “(” Expression “)” Statement
-ReturnStat::= “return” Expression
-ReadStat::= “read” “(” LeftValue { “,” LeftValue } “)”
-LeftValue::= [ (“this” | Id ) “.” ] Id
-WriteStat::= “write” “(” ExpressionList “)”
-CompStatement::= “{” { Statement } “}”
-
-PrimaryExpr::= “super” “.” Id “(” [ ExpressionList ] “)” |
+﻿PrimaryExpr::= “super” “.” Id “(” [ ExpressionList ] “)” |
                 Id |
                 Id “.” Id |
                 Id “.” Id “(” [ ExpressionList ] ”)” |

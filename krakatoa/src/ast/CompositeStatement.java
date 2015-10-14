@@ -1,17 +1,41 @@
 package ast;
 
-/**
- * Created by hsq on 10/11/15.
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
  */
+
+import java.util.ArrayList;
+
 public class CompositeStatement extends Statement {
-    public CompositeStatement(Expr compositeExpr) {
-        this.compExpr = compositeExpr;
+    private ArrayList<Statement> statementList;
+    private boolean hasBreakStatement;
+    private boolean hasVarDeclarations;
+
+    public CompositeStatement(ArrayList<Statement> stmts) {
+        this.statementList = stmts;
+        for (Statement s : this.statementList) {
+            if (s instanceof BreakStatement)
+                this.hasBreakStatement = true;
+            else
+                this.hasBreakStatement = false;
+
+            if (s instanceof EmptyStatement)
+                this.hasVarDeclarations = true;
+            else
+                this.hasVarDeclarations = false;
+        }
     }
 
-    @Override
+    public boolean isHasBreakStatement() {
+        return hasBreakStatement;
+    }
+
+    public boolean isHasVarDeclarations() {
+        return hasVarDeclarations;
+    }
+
     public void genC(PW pw) {
-        this.compExpr.genC(pw, false);
-    }
 
-    private Expr compExpr;
+    }
 }

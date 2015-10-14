@@ -8,7 +8,7 @@ public class ObjectExpr extends Expr {
 	public ObjectExpr(KraClass classType) {
 		super();
 		this.classType = classType;
-		this.type = Type.undefinedType;
+		this.type = new ClassType(classType.getName());
 	}
 
 	@Override
@@ -21,7 +21,6 @@ public class ObjectExpr extends Expr {
 
 	@Override
 	public Type getType() {
-		// TODO Auto-generated method stub
 		return this.type;
 	}
 	
