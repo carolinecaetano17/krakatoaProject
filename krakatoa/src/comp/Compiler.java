@@ -44,8 +44,9 @@ public class Compiler {
             while (lexer.token == Symbol.MOCall) {
                 metaobjectCallList.add(metaobjectCall());
             }
-
-            kraClassList.add(classDec());
+            
+            KraClass aux =classDec();
+            kraClassList.add(aux);
 
             while (lexer.token == Symbol.CLASS || lexer.token == Symbol.FINAL)
                 kraClassList.add(classDec());
@@ -257,6 +258,7 @@ public class Compiler {
         superClass = null;
 
         return newClass;
+        
     }
 
     /* InstVarDec::= Type IdList â€œ;â€�
@@ -529,27 +531,42 @@ public class Compiler {
 
         switch (lexer.token) {
             case THIS:
+            	lexer.nextToken();
+            	break;
             case IDENT:
+            	lexer.nextToken();
+            	break;
             case SUPER:
+            	lexer.nextToken();
+            	break;
             case INT:
+            	lexer.nextToken();
+            	break;
             case BOOLEAN:
+            	lexer.nextToken();
+            	break;
             case STRING:
                 st = assignExprLocalDec();
                 break;
             case RETURN:
+            	lexer.nextToken();
             	/*ERROR ALL DOWN*/
                 //st = returnStatement();
                 break;
             case READ:
+            	lexer.nextToken();
                 //st = readStatement();
                 break;
             case WRITE:
+            	lexer.nextToken();
                 //st = writeStatement();
                 break;
             case WRITELN:
+            	lexer.nextToken();
                 //st = writelnStatement();
                 break;
             case IF:
+            	lexer.nextToken();
             	/*ERROR*/
                 //st = ifStatement();
                 break;
@@ -558,6 +575,7 @@ public class Compiler {
                 st = breakStatement();
                 break;
             case WHILE:
+            	lexer.nextToken();
             	/*ERROR*/
                 //st = whileStatement();
                 break;
@@ -566,9 +584,17 @@ public class Compiler {
                 st = nullStatement();
                 break;
             case LEFTCURBRACKET:
+            	lexer.nextToken();
             	/*ERROR*/
                 //st = compositeStatement();
                 break;
+            case ASSIGN:
+            	
+            	//Consumes the right side of the assigment statement
+            	while(lexer.token != Symbol.SEMICOLON)
+            		lexer.nextToken();
+            	lexer.nextToken();
+            	break;
             default:
                 signalError.show("Statement expected");
         }
