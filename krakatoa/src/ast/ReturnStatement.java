@@ -13,5 +13,9 @@ public class ReturnStatement extends Statement {
         this.expr.genC(pw, false);
     }
 
+    public Expr getExpr() {
+        return expr;
+    }
+
     private Expr expr;
 }

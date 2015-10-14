@@ -378,6 +378,35 @@ public class Compiler {
         //Building AST
         newMethod.setStatementList(statementList());
 
+        //Check statements for a return statement
+        for (Statement s : newMethod.getStatementList()) {
+            if (s instanceof ReturnStatement) {
+                Expr left = ((ReturnStatement) s).getExpr();
+
+                //Check if they're both basic types
+                if (isBasicType(left.getType()) && left.getType() != newMethod.getType())
+                    signalError.show("Trying to return different basic types.");
+
+                //If not, do class checks
+                if (left.getType() instanceof ClassType) {
+                    Type l = left.getType();
+                    Type r = newMethod.getType();
+                    //Not the same class, check if subclass
+                    if (!l.getName().equals(r.getName())) {
+                        KraClass classHelper = symbolTable.getInGlobal(r.getName());
+                        boolean isSubClass = false;
+                        while (classHelper != null) {
+                            classHelper = classHelper.getSuperclass();
+                            if (classHelper != null && classHelper.getName().equals(l.getName()))
+                                isSubClass = true;
+                        }
+                        if (!isSubClass)
+                            signalError.show("Trying to return incompatible class types.");
+                    }
+                }
+            }
+        }
+
         if (lexer.token != Symbol.RIGHTCURBRACKET) signalError.show("} expected");
 
         lexer.nextToken();
@@ -611,7 +640,7 @@ public class Compiler {
                 //If not, do class checks
                 if (left.getType() instanceof ClassType) {
                     Type l = left.getType();
-                    Type r = left.getType();
+                    Type r = right.getType();
                     //Not the same class, check if subclass
                     if (!l.getName().equals(r.getName())) {
                         KraClass classHelper = symbolTable.getInGlobal(r.getName());
@@ -660,6 +689,9 @@ public class Compiler {
         lexer.nextToken();
         Statement s = statement();
 
+        if (s instanceof CompositeStatement && ((CompositeStatement) s).isHasVarDeclarations())
+            signalError.show("Trying to declare variables inside while");
+
         return new WhileStatement(e, s);
     }
 
@@ -678,6 +710,24 @@ public class Compiler {
         if (lexer.token == Symbol.ELSE) {
             lexer.nextToken();
             elsePart = statement();
+        }
+
+        //Check to see if there is a break statement inside if
+        if (ifPart instanceof BreakStatement) signalError.show("Break statement inside if");
+        if (elsePart != null && elsePart instanceof BreakStatement) signalError.show("Break statement inside else");
+
+        //Check to see if there is a break, or variable declarations inside if and else
+        if (ifPart instanceof CompositeStatement) {
+            if (((CompositeStatement) ifPart).isHasBreakStatement()) signalError.show("Break statement inside if");
+            if (((CompositeStatement) ifPart).isHasVarDeclarations())
+                signalError.show("Trying to declare variables inside if");
+        }
+
+        if (elsePart != null && elsePart instanceof CompositeStatement) {
+            if (((CompositeStatement) elsePart).isHasBreakStatement()) signalError.show("Break statement inside else");
+            if (((CompositeStatement) elsePart).isHasVarDeclarations())
+                signalError.show("Trying to declare variables inside else");
+
         }
 
         return new IfStatement(e, ifPart, elsePart);
