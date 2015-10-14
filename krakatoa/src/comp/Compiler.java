@@ -603,7 +603,6 @@ public class Compiler {
 
     /* AssignExprLocalDec ::= Expression [ "=" Expression ] | LocalDec
        LocalDec ::= Type IdList ";" */
-    /*ERROR*/
     private Statement assignExprLocalDec() {
         if (lexer.token == Symbol.INT || lexer.token == Symbol.BOOLEAN
                 || lexer.token == Symbol.STRING ||
@@ -626,8 +625,6 @@ public class Compiler {
                     signalError.show("Trying to assign different basic types.");
 
                 //If not, do class checks
-                /*ERROR*/
-                /*
                 if (left.getType() instanceof ClassType) {
                     Type l = left.getType();
                     Type r = left.getType();
@@ -643,24 +640,18 @@ public class Compiler {
                         if (!isSubClass)
                             signalError.show("Trying to assign incompatible class types.");
                     }
-                }*/
+                }
 
                 if (lexer.token != Symbol.SEMICOLON)
                     signalError.show("';' expected", true);
                 else
                     lexer.nextToken();
             }
-            /*ERROR*/
-            //if (right != null)
-            	/*ERROR*/
-                //return new CompositeStatement(new CompositeExpr(left, Symbol.ASSIGN, right));
-            	/*ERROR*/
-            //else
-            	/*ERROR*/
-                //return new ExprStatement(left);
+            if (right != null)
+                return new CompositeStatement(new CompositeExpr(left, Symbol.ASSIGN, right));
+            else
+                return new ExprStatement(left);
         }
-        /*ERROR IT MUST GO*/
-        return null;
     }
 
     private ExprList realParameters() {
