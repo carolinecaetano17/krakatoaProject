@@ -1,9 +1,8 @@
-﻿PrimaryExpr::= “super” “.” Id “(” [ ExpressionList ] “)” |
+﻿PrimaryExpr::=
                 Id |
                 Id “.” Id |
                 Id “.” Id “(” [ ExpressionList ] ”)” |
                 Id “.” Id “.” Id “(” [ ExpressionList ] “)” |
-                “this” |
                 “this” “.” Id |
                 “this” ”.” Id “(” [ ExpressionList ] “)” |
                 “this” ”.” Id “.” Id “(” [ ExpressionList ] “)”

@@ -1,6 +1,11 @@
 package ast;
 
-import lexer.*;
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
+import lexer.Symbol;
 
 public class SignalExpr extends Expr {
 

@@ -1,9 +1,8 @@
 package comp;
 
-/**
- * a compilation error
- * 
-   @author José
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
  */
 public class CompilationError {
 

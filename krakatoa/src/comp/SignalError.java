@@ -1,8 +1,14 @@
 package comp;
-import java.io.*;
-import java.util.ArrayList;
-import lexer.*;
 
+import lexer.Lexer;
+
+import java.io.PrintWriter;
+import java.util.ArrayList;
+
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
 public class SignalError {
 
 

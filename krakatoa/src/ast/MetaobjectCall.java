@@ -17,8 +17,8 @@ import java.util.ArrayList;
  *     public void run() { } <br>
  * end <br>
  * </code>
- * 
-   @author José
+ *
+ @author JosÃ©
    
  */
 public class MetaobjectCall extends ASTNode{

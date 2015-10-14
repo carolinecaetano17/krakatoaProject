@@ -1,7 +1,8 @@
 package ast;
 
-/**
- * Created by hsq on 10/11/15.
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
  */
 public class ClassType extends Type {
     public ClassType(String name) {

@@ -1,6 +1,12 @@
 package ast;
 
-import lexer.*;
+/* Authors:
+ * Caroline Pessoa Caetano - 408247
+ * Henrique Squinello - 408352
+ */
+
+import lexer.Symbol;
+
 import java.util.HashMap;
 
 
