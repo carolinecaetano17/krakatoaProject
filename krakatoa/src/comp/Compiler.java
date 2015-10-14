@@ -792,6 +792,12 @@ public class Compiler {
         if (lexer.token != Symbol.SEMICOLON)
             signalError.show(SignalError.semicolon_expected);
         lexer.nextToken();
+        
+        for (Variable v: varList) {
+        	if(v.getType() != Type.intType && v.getType() != Type.stringType)
+        		signalError.show("Read Statement only accepts expressions of type Int or String");
+        }
+        
         return new ReadStatement(varList);
     }
 
@@ -809,8 +815,8 @@ public class Compiler {
         lexer.nextToken();
 
         for (Expr e: exprList.getExprList()) {
-        	if(e.getType() == Type.booleanType)
-        		signalError.show("Writeln Statement can not have a boolean expression");
+        	if(e.getType() != Type.intType && e.getType() != Type.stringType)
+        		signalError.show("Write Statement only accepts expressions of type Int or String");
         }
         return new WriteStatement(exprList);
     }
@@ -828,8 +834,8 @@ public class Compiler {
         lexer.nextToken();
 
         for (Expr e: exprList.getExprList()) {
-        	if(e.getType() == Type.booleanType)
-        		signalError.show("Writeln Statement can not have a boolean expression");
+        	if(e.getType() != Type.intType && e.getType() != Type.stringType)
+        		signalError.show("Writeln Statement only accepts expressions of type Int or String");
         }
 
         return new WritelnStatement(exprList);
