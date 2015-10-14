@@ -579,12 +579,6 @@ public class Compiler {
             	lexer.nextToken();
                 st = compositeStatement();
                 break;
-            case ASSIGN:
-            	//Consumes the right side of the assigment statement
-            	while(lexer.token != Symbol.SEMICOLON)
-            		lexer.nextToken();
-            	lexer.nextToken();
-            	break;
             default:
                 signalError.show("Statement expected");
         }
@@ -661,6 +655,7 @@ public class Compiler {
         if (lexer.token != Symbol.LEFTPAR) signalError.show("( expected");
         lexer.nextToken();
         Expr e = expr();
+        if (e.getType() != Type.booleanType) signalError.show("Boolean expression expected");
         if (lexer.token != Symbol.RIGHTPAR) signalError.show(") expected");
         lexer.nextToken();
         Statement s = statement();
@@ -676,6 +671,7 @@ public class Compiler {
         if (lexer.token != Symbol.LEFTPAR) signalError.show("( expected");
         lexer.nextToken();
         Expr e = expr();
+        if (e.getType() != Type.booleanType) signalError.show("Boolean expression expected");
         if (lexer.token != Symbol.RIGHTPAR) signalError.show(") expected");
         lexer.nextToken();
         Statement ifPart = statement();
