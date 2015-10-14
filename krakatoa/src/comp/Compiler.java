@@ -1094,6 +1094,7 @@ public class Compiler {
 
                 String firstId = lexer.getStringValue();
                 lexer.nextToken();
+                boolean secondIdVerified = false;
                 if (lexer.token != Symbol.DOT) {
                     // Id
                     // retorne um objeto da ASA que representa um identificador
@@ -1113,6 +1114,25 @@ public class Compiler {
                         signalError.show("Identifier expected");
                     } else {
                         // Id "." Id
+                    	
+                    	Variable helperVar = symbolTable.getLocalVar(firstId);
+
+                    	if(helperVar != null){
+                    		
+                    		KraClass helperType = symbolTable.getInGlobal(helperVar.getType().getCname());
+                    		
+                    		if(helperType != null){
+                    			//The type is a existing KraClass
+                    			secondIdVerified = true;
+                    		}else{
+                    			//The type is not a class
+                    			signalError.show("The identifier " + firstId + " can not send a Message");
+                    		}                    		
+                    		
+                    	}else{
+                    		signalError.show("The identifier " + firstId + " was not found!");
+                    	}
+                    	
                         lexer.nextToken();
                         ident = lexer.getStringValue();
                         if (lexer.token == Symbol.DOT) {
