@@ -531,20 +531,10 @@ public class Compiler {
 
         switch (lexer.token) {
             case THIS:
-            	lexer.nextToken();
-            	break;
             case IDENT:
-            	lexer.nextToken();
-            	break;
             case SUPER:
-            	lexer.nextToken();
-            	break;
             case INT:
-            	lexer.nextToken();
-            	break;
             case BOOLEAN:
-            	lexer.nextToken();
-            	break;
             case STRING:
                 st = assignExprLocalDec();
                 break;
