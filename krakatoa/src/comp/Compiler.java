@@ -531,10 +531,15 @@ public class Compiler {
 
         switch (lexer.token) {
             case THIS:
+            	st = assignExprLocalDec();
             case IDENT:
+            	st = assignExprLocalDec();
             case SUPER:
+            	st = assignExprLocalDec();
             case INT:
+            	st = assignExprLocalDec();
             case BOOLEAN:
+            	st = assignExprLocalDec();
             case STRING:
                 st = assignExprLocalDec();
                 break;
@@ -574,13 +579,6 @@ public class Compiler {
             	lexer.nextToken();
                 st = compositeStatement();
                 break;
-            case ASSIGN:
-            	
-            	//Consumes the right side of the assigment statement
-            	while(lexer.token != Symbol.SEMICOLON)
-            		lexer.nextToken();
-            	lexer.nextToken();
-            	break;
             default:
                 signalError.show("Statement expected");
         }
@@ -686,13 +684,19 @@ public class Compiler {
         lexer.nextToken();
     }
 
-    private void readStatement() {
-        lexer.nextToken();
+    private ReadStatement readStatement() {
+    	ArrayList<Variable> varList = new ArrayList<Variable>();
+    	boolean isInstance = false;
+    	Variable varHelper;
+        
+    	lexer.nextToken();
         if (lexer.token != Symbol.LEFTPAR) signalError.show("( expected");
         lexer.nextToken();
         while (true) {
             if (lexer.token == Symbol.THIS) {
-                lexer.nextToken();
+            	//It's an instance variable
+                isInstance = true;
+            	lexer.nextToken();
                 if (lexer.token != Symbol.DOT) signalError.show(". expected");
                 lexer.nextToken();
             }
@@ -700,11 +704,28 @@ public class Compiler {
                 signalError.show(SignalError.ident_expected);
 
             String name = lexer.getStringValue();
+            
+            if(isInstance){
+            	//It's an instance variable
+            	varHelper = symbolTable.getInstanceVar(name);
+            }else{
+            	//It's a local variable
+                varHelper = symbolTable.getLocalVar(name);	
+            }
+            
+            if(varHelper == null)
+            	signalError.show("Variable " + name + " does not exist");
+            else{
+            	varList.add(varHelper);
+            }
+            
             lexer.nextToken();
             if (lexer.token == Symbol.COMMA)
                 lexer.nextToken();
             else
                 break;
+            
+            isInstance = false;
         }
 
         if (lexer.token != Symbol.RIGHTPAR) signalError.show(") expected");
@@ -712,32 +733,48 @@ public class Compiler {
         if (lexer.token != Symbol.SEMICOLON)
             signalError.show(SignalError.semicolon_expected);
         lexer.nextToken();
+        return new ReadStatement(varList);
     }
 
-    private void writeStatement() {
-
+    private WriteStatement writeStatement() {
+    	
+    	ExprList exprList;
         lexer.nextToken();
         if (lexer.token != Symbol.LEFTPAR) signalError.show("( expected");
         lexer.nextToken();
-        exprList();
+        exprList = exprList();
         if (lexer.token != Symbol.RIGHTPAR) signalError.show(") expected");
         lexer.nextToken();
         if (lexer.token != Symbol.SEMICOLON)
             signalError.show(SignalError.semicolon_expected);
         lexer.nextToken();
+        
+        for (Expr e: exprList.getExprList()) {
+        	if(e.getType() == Type.booleanType)
+        		signalError.show("Writeln Statement can not have a boolean expression");
+        }
+        return new WriteStatement(exprList);
     }
 
-    private void writelnStatement() {
-
+    private WritelnStatement writelnStatement() {
+    	ExprList exprList;
         lexer.nextToken();
         if (lexer.token != Symbol.LEFTPAR) signalError.show("( expected");
         lexer.nextToken();
-        exprList();
+        exprList = exprList();
         if (lexer.token != Symbol.RIGHTPAR) signalError.show(") expected");
         lexer.nextToken();
         if (lexer.token != Symbol.SEMICOLON)
             signalError.show(SignalError.semicolon_expected);
         lexer.nextToken();
+        
+        for (Expr e: exprList.getExprList()) {
+        	if(e.getType() == Type.booleanType)
+        		signalError.show("Writeln Statement can not have a boolean expression");
+        }
+        
+        return new WritelnStatement(exprList);
+        
     }
 
     private BreakStatement breakStatement() {
@@ -754,7 +791,7 @@ public class Compiler {
     private NullStatement nullStatement() {
         NullStatement n = new NullStatement();
         lexer.nextToken();
-
+        
         return n;
     }
 
