@@ -550,25 +550,23 @@ public class Compiler {
                 break;
             case RETURN:
             	lexer.nextToken();
-            	/*ERROR ALL DOWN*/
-                //st = returnStatement();
+                st = returnStatement();
                 break;
             case READ:
             	lexer.nextToken();
-                //st = readStatement();
+                st = readStatement();
                 break;
             case WRITE:
             	lexer.nextToken();
-                //st = writeStatement();
+                st = writeStatement();
                 break;
             case WRITELN:
             	lexer.nextToken();
-                //st = writelnStatement();
+                st = writelnStatement();
                 break;
             case IF:
             	lexer.nextToken();
-            	/*ERROR*/
-                //st = ifStatement();
+            	st = ifStatement();
                 break;
             case BREAK:
                 //Returns a BreakStatement that extends Statement
@@ -576,8 +574,7 @@ public class Compiler {
                 break;
             case WHILE:
             	lexer.nextToken();
-            	/*ERROR*/
-                //st = whileStatement();
+                st = whileStatement();
                 break;
             case SEMICOLON:
                 //Returns a NullStatement that extends Statement
@@ -585,8 +582,7 @@ public class Compiler {
                 break;
             case LEFTCURBRACKET:
             	lexer.nextToken();
-            	/*ERROR*/
-                //st = compositeStatement();
+                st = compositeStatement();
                 break;
             case ASSIGN:
             	
