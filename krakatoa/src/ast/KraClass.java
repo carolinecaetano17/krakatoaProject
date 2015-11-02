@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /* Authors:
  * Caroline Pessoa Caetano - 408247
@@ -11,8 +12,10 @@ public class KraClass extends Type {
     private String name;
     private KraClass superclass;
     private InstanceVariableList instanceVariableList;
+    private InstanceVariableList staticVariableList;
     private ArrayList<Method> publicMethodList;
     private ArrayList<Method> privateMethodList;
+    private ArrayList<Method> staticMethodList;
 
     private boolean isFinal;
 
@@ -20,6 +23,7 @@ public class KraClass extends Type {
         super(name);
         this.publicMethodList = new ArrayList<Method>();
         this.privateMethodList = new ArrayList<Method>();
+        this.staticMethodList = new ArrayList<Method>();
         this.isFinal = false;
         this.superclass = null;
     }
@@ -28,6 +32,7 @@ public class KraClass extends Type {
         super(name);
         this.publicMethodList = new ArrayList<Method>();
         this.privateMethodList = new ArrayList<Method>();
+        this.staticMethodList = new ArrayList<Method>();
         this.isFinal = isFinal;
         this.superclass = null;
     }
@@ -35,8 +40,8 @@ public class KraClass extends Type {
     public String getCname() {
         return getName();
     }
-    // m�todos p�blicos get e set para obter e iniciar as vari�veis acima,
-    // entre outros m�todos
+    // métodos públicos get e set para obter e iniciar as variáveis acima,
+    // entre outros métodos
 
     public KraClass getSuperclass() {
         return superclass;
@@ -62,6 +67,14 @@ public class KraClass extends Type {
         this.instanceVariableList = instanceVariableList;
     }
 
+    public InstanceVariableList getStaticVariableList() {
+        return staticVariableList;
+    }
+
+    public void setStaticVariableList(InstanceVariableList staticVariableList) {
+        this.staticVariableList = staticVariableList;
+    }
+
     public ArrayList<Method> getPublicMethodList() {
         return publicMethodList;
     }
@@ -78,11 +91,20 @@ public class KraClass extends Type {
         this.privateMethodList = privateMethodList;
     }
 
-    public void addMethod(Method newMethod) {
+    public ArrayList<Method> getStaticMethodList() {
+        return staticMethodList;
+    }
 
-        if (newMethod.getQualifier() == "private") {
+    public void setStaticMethodList(ArrayList<Method> staticMethodList) {
+        this.staticMethodList = staticMethodList;
+    }
+
+    public void addMethod(Method newMethod) {
+        if (newMethod.isStatic()) {
+            this.staticMethodList.add(newMethod);
+        } else if (Objects.equals(newMethod.getQualifier(), "private")) {
             this.privateMethodList.add(newMethod);
-        } else if (newMethod.getQualifier() == "public") {
+        } else if (Objects.equals(newMethod.getQualifier(), "public")) {
             this.publicMethodList.add(newMethod);
         }
 

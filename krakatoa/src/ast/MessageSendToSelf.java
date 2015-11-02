@@ -5,9 +5,10 @@ package ast;
  * Henrique Squinello - 408352
  */
 public class MessageSendToSelf extends MessageSend {
-    
-    public Type getType() { 
-        return null;
+
+    //TODO: Return correct type based on Variable or Method.
+    public Type getType() {
+        return;
     }
     
     public void genC( PW pw, boolean putParenthesis ) {

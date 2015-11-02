@@ -5,11 +5,11 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-public class MessageSendToSuper extends MessageSend { 
-	
+public class MessageSendToSuper extends MessageSend {
+
+	Method method;
 	private KraClass to;
 	private KraClass from;
-	Method method;
 	
 	public MessageSendToSuper(KraClass to, KraClass from, Method method) {
 		super();
@@ -42,9 +42,11 @@ public class MessageSendToSuper extends MessageSend {
 		this.method = method;
 	}
 
-	public Type getType() { 
-        return null;
-    }
+	//TODO: Return correct type based on Variable or Method.
+	public Type getType() {
+		returnull;
+		n
+	}
 
     public void genC( PW pw, boolean putParenthesis ) {
         
