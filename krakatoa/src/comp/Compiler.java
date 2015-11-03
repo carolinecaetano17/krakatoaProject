@@ -995,6 +995,7 @@ public class Compiler {
 
         boolean methodFound;
         ArrayList<Method> publicMethods;
+        ArrayList<Method> privateMethods;
         Method desiredMethod = new Method("nullMethod");
         KraClass desiredClass = new KraClass("nullClass");
 
@@ -1235,13 +1236,21 @@ public class Compiler {
 
                         } else {
                             // retorne o objeto da ASA que representa Id "." Id
-                            Variable messageReceptor = symbolTable.getLocalVar(secondId);
-                            if (messageReceptor != null) {
-                                return new MessageSendToVariable(calledClass, messageReceptor);
-                            } else {
-                                signalError.show("Identifier " + secondId + " not found.");
+                            // ou seja, variável estática da própria classe.
+                            if (!firstId.equals(currentClass.getName())) {
+                                signalError.show("Cannot access static variables of other class");
+                            }
+                            InstanceVariableList currentClassStaticVariables = currentClass.getStaticVariableList();
+                            if (currentClassStaticVariables.getInstanceVariableList() == null) {
+                                signalError.show("Class " + firstId + " does not have static variables.");
                                 return null;
                             }
+                            for (Variable v : currentClassStaticVariables.getInstanceVariableList()) {
+                                if (v.getName().equals(secondId))
+                                    return new MessageSendToVariable(currentClass, v);
+                            }
+                            signalError.show("Identifier " + secondId + " not found.");
+                            return null;
                         }
                     }
                 }
@@ -1262,43 +1271,134 @@ public class Compiler {
 
                 lexer.nextToken();
                 if (lexer.token != Symbol.DOT) {
-                    // only 'this'
-                    // retorne um objeto da ASA que representa 'this'
-                    // confira se não estamos em um método estático
-                    return null;
+                    return new VariableExpr(new Variable(currentClass.getName(), currentClass));
                 } else {
                     lexer.nextToken();
                     if (lexer.token != Symbol.IDENT)
                         signalError.show("Identifier expected");
-                    ident = lexer.getStringValue();
+                    firstId = lexer.getStringValue();
                     lexer.nextToken();
                     // já analisou "this" "." Id
                     if (lexer.token == Symbol.LEFTPAR) {
                         // "this" "." Id "(" [ ExpressionList ] ")"
-                    /*
-                     * Confira se a classe corrente possui um método cujo nome é
-					 * 'ident' e que pode tomar os parâmetros de ExpressionList
-					 */
-                        exprList = this.messageSendParameters();
+                        /*
+                         * Confira se a classe corrente possui um método cujo nome é
+                         * 'ident' e que pode tomar os parâmetros de ExpressionList
+                         */
+                        exprList = messageSendParameters();
+
+                        methodFound = false;
+
+                        //First search on current class private methods
+                        privateMethods = currentClass.getPrivateMethodList();
+                        if (privateMethods == null) {
+                            signalError.show("Class " + currentClass.getName() + " does not have private methods");
+                            return null;
+                        }
+
+                        for (Method m : privateMethods) {
+                            if (firstId.equals(m.getName())) {
+                                desiredMethod = m;
+                                desiredClass = currentClass;
+                                methodFound = true;
+                            }
+                        }
+
+                        //Then search in its public methods
+                        if (!methodFound) {
+                            publicMethods = currentClass.getPublicMethodList();
+                            if (publicMethods == null) {
+                                signalError.show("Class " + currentClass.getName() + " does not have public methods");
+                                return null;
+                            }
+
+                            for (Method m : publicMethods) {
+                                if (firstId.equals(m.getName()) && m.getQualifier().equals("public")) {
+                                    desiredMethod = m;
+                                    desiredClass = currentClass;
+                                    methodFound = true;
+                                }
+                            }
+                        }
+
+                        //Finally search its superclasses
+                        KraClass thisSuperClass = currentClass.getSuperclass();
+                        while (!methodFound && thisSuperClass != null) {
+                            //Try to find messageName
+                            publicMethods = thisSuperClass.getPublicMethodList();
+                            for (Method m : publicMethods) {
+                                if (firstId.equals(m.getName())) {
+                                    desiredMethod = m;
+                                    desiredClass = thisSuperClass;
+                                    methodFound = true;
+                                }
+                            }
+                            thisSuperClass = thisSuperClass.getSuperclass();
+                        }
+
+                        if (!methodFound) {
+                            signalError.show("Method " + firstId + " was not found!");
+                            return null;
+                        } else {
+                            checkParams(desiredMethod, exprList);
+                            return new MessageSendToClass(desiredClass, this.currentClass, desiredMethod);
+                        }
                     } else if (lexer.token == Symbol.DOT) {
+                        //TODO
                         // "this" "." Id "." Id "(" [ ExpressionList ] ")"
                         lexer.nextToken();
                         if (lexer.token != Symbol.IDENT)
                             signalError.show("Identifier expected");
+                        String secondId = lexer.getStringValue();
+
+                        Variable calledVariable = symbolTable.getInstanceVar(firstId);
+                        if (calledVariable == null) {
+                            signalError.show("Variable " + firstId + " not found.");
+                            return null;
+                        }
+                        if (!(calledVariable.getType() instanceof KraClass)) {
+                            signalError.show("Variable must be a class to receive messages.");
+                        }
+                        KraClass calledClass = (KraClass) calledVariable.getType();
+
+                        methodFound = false;
+                        //Search for the desired method
+                        while (!methodFound && calledClass != null) {
+                            //Try to find messageName
+                            publicMethods = calledClass.getPublicMethodList();
+                            for (Method m : publicMethods) {
+                                if (secondId.equals(m.getName())) {
+                                    desiredMethod = m;
+                                    desiredClass = calledClass;
+                                    methodFound = true;
+                                }
+                            }
+                            calledClass = calledClass.getSuperclass();
+                        }
+
                         lexer.nextToken();
                         exprList = this.messageSendParameters();
+
+                        if (!methodFound) {
+                            signalError.show("Method " + secondId + " was not found!");
+                            return null;
+                        } else {
+                            checkParams(desiredMethod, exprList);
+                            return new MessageSendToClass(desiredClass, this.currentClass, desiredMethod);
+                        }
                     } else {
-                        // retorne o objeto da ASA que representa "this" "." Id
-                    /*
-                     * confira se a classe corrente realmente possui uma
-					 * variável de instância 'ident'
-					 */
-                        return null;
+                        Variable messageReceptor = symbolTable.getInstanceVar(firstId);
+                        if (messageReceptor != null) {
+                            return new MessageSendToVariable(currentClass, messageReceptor);
+                        } else {
+                            signalError.show("Identifier " + firstId + " not found.");
+                            return null;
+                        }
                     }
                 }
-                break;
             default:
                 signalError.show("Expression expected");
+                break;
         }
         return null;
     }
