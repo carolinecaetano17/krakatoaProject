@@ -5,22 +5,20 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-import java.util.ArrayList;
-
 public class ReadStatement extends Statement {
 
-    private ArrayList<Variable> varList;
+    private ExprList readList;
 
-    public ReadStatement(ArrayList<Variable> list) {
-        this.varList = list;
+    public ReadStatement( ExprList list ) {
+        this.readList = list;
     }
 
-    public ArrayList<Variable> getVarList() {
-        return varList;
+    public ExprList getVarList() {
+        return readList;
     }
 
-    public void setVarList(ArrayList<Variable> varList) {
-        this.varList = varList;
+    public void setVarList( ExprList el ) {
+        this.readList = el;
     }
 
     @Override

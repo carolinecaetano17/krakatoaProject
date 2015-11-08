@@ -17,6 +17,7 @@ public class Compiler {
     boolean isCurrentMemberFinal = false;
     boolean isCurrentMemberStatic = false;
     boolean isCurrentClassFinal = false;
+    boolean insideWhileStatement = false;
     private KraClass currentClass;
     private Method currentMethod;
     private SymbolTable symbolTable;
@@ -89,6 +90,7 @@ public class Compiler {
             signalError.show( "No class Program with a public, parameterless method called run found." );
 
         } catch ( Exception e ) {
+            //e.printStackTrace();
             // if there was an exception, there is a compilation signalError
         }
 
@@ -698,7 +700,9 @@ public class Compiler {
                 break;
             case WHILE:
                 lexer.nextToken();
+                insideWhileStatement = true;
                 st = whileStatement();
+                insideWhileStatement = false;
                 break;
             case SEMICOLON:
                 st = nullStatement();
@@ -840,14 +844,14 @@ public class Compiler {
 
         //Check to see if there is a break, or variable declarations inside if and else
         if ( ifPart instanceof CompositeStatement ) {
-            if ( (( CompositeStatement ) ifPart).isHasBreakStatement() )
+            if ( (( CompositeStatement ) ifPart).isHasBreakStatement() && !insideWhileStatement )
                 signalError.show( "Break statement inside if" );
             if ( (( CompositeStatement ) ifPart).isHasVarDeclarations() )
                 signalError.show( "Trying to declare variables inside if" );
         }
 
         if ( elsePart != null && elsePart instanceof CompositeStatement ) {
-            if ( (( CompositeStatement ) elsePart).isHasBreakStatement() )
+            if ( (( CompositeStatement ) elsePart).isHasBreakStatement() && !insideWhileStatement )
                 signalError.show( "Break statement inside else" );
             if ( (( CompositeStatement ) elsePart).isHasVarDeclarations() )
                 signalError.show( "Trying to declare variables inside else" );
@@ -868,52 +872,24 @@ public class Compiler {
     }
 
     private ReadStatement readStatement() {
-        ArrayList<Variable> varList = new ArrayList<>();
-        boolean isInstance = false;
-        Variable varHelper;
+        ExprList readList = new ExprList();
 
         if ( lexer.token != Symbol.LEFTPAR ) signalError.show( "( expected" );
         lexer.nextToken();
-        while ( true ) {
-            if ( lexer.token == Symbol.THIS ) {
-                //It's an instance variable
-                isInstance = true;
-                lexer.nextToken();
-                if ( lexer.token != Symbol.DOT ) signalError.show( ". expected" );
-                lexer.nextToken();
-            }
-            if ( lexer.token != Symbol.IDENT )
-                signalError.show( SignalError.ident_expected );
 
-            String name = lexer.getStringValue();
-
-            if ( isInstance ) {
-                //It's an instance variable
-                varHelper = symbolTable.getInstanceVar( name );
-            } else {
-                //It's a local variable
-                varHelper = symbolTable.getLocalVar( name );
-            }
-
-            if ( varHelper == null )
-                signalError.show( "Variable " + name + " does not exist" );
-            else {
-                varList.add( varHelper );
-            }
-
-            lexer.nextToken();
+        while ( lexer.token != Symbol.RIGHTPAR ) {
             if ( lexer.token == Symbol.COMMA )
                 lexer.nextToken();
-            else
-                break;
-
-            isInstance = false;
+            readList.addElement( leftValue() );
         }
 
         if ( lexer.token != Symbol.RIGHTPAR ) signalError.show( ") expected" );
 
-        for ( Variable v : varList ) {
-            if ( v.getType() != Type.intType && v.getType() != Type.stringType )
+        if ( readList.getExprList().size() == 0 )
+            signalError.show( "Read Statement without arguments" );
+
+        for ( Expr e : readList.getExprList() ) {
+            if ( e.getType() != Type.intType && e.getType() != Type.stringType )
                 signalError.show( "Read Statement only accepts expressions of type Int or String" );
         }
 
@@ -921,7 +897,86 @@ public class Compiler {
         if ( lexer.token != Symbol.SEMICOLON ) signalError.show( SignalError.semicolon_expected );
         lexer.nextToken();
 
-        return new ReadStatement( varList );
+        return new ReadStatement( readList );
+    }
+
+    private Expr leftValue() {
+        if ( lexer.token != Symbol.THIS && lexer.token != Symbol.IDENT )
+            signalError.show( "identifier or 'this' expected" );
+
+        if ( lexer.token == Symbol.THIS ) {
+            System.out.println( lexer.token.toString() );
+            if ( currentMethod.isStatic() )
+                signalError.show( "this cannot be used inside a static method" );
+            lexer.nextToken();
+            if ( lexer.token != Symbol.DOT )
+                signalError.show( ". expected" );
+            lexer.nextToken();
+            if ( lexer.token != Symbol.IDENT )
+                signalError.show( "identifier expected" );
+
+            String variableId = lexer.getStringValue();
+
+            //Procure nas variáveis da própria classe
+            Variable var = symbolTable.getInstanceVar( variableId );
+            if ( var == null )
+                signalError.show( "Could not find variable " + variableId );
+
+            lexer.nextToken();
+
+            return new MessageSendToVariable( currentClass, var );
+        } else {
+            String firstId = lexer.getStringValue();
+
+            lexer.nextToken();
+
+            if ( lexer.token != Symbol.DOT ) {
+                Variable var = symbolTable.getLocalVar( firstId );
+                if ( var == null )
+                    signalError.show( "Could not find local variable " + firstId );
+                return new VariableExpr( var );
+            }
+
+            lexer.nextToken();
+            if ( lexer.token != Symbol.IDENT )
+                signalError.show( "identifier expected" );
+
+            String secondId = lexer.getStringValue();
+            KraClass calledClass = null;
+            //Checa se há variável local com esse nome
+            Variable localVar = symbolTable.getLocalVar( firstId );
+
+            lexer.nextToken();
+
+            if ( localVar != null && localVar.getType() instanceof KraClass ) {
+                calledClass = ( KraClass ) localVar.getType();
+            } else if ( firstId.equals( currentClass.getName() ) ) {
+                //Chamada a um método estático ou var estática da própria classe
+                calledClass = currentClass;
+            }
+
+            if ( calledClass == null ) {
+                signalError.show( "Identifier " + firstId + " not found." );
+                return null;
+            }
+
+            if ( !calledClass.getName().equals( currentClass.getName() ) ) {
+                signalError.show( "Cannot access static variables of other class" );
+            }
+            InstanceVariableList currentClassStaticVariables = calledClass.getStaticVariableList();
+            if ( currentClassStaticVariables.getInstanceVariableList() == null ) {
+                signalError.show( "Class " + firstId + " does not have static variables." );
+                return null;
+            }
+            for ( Variable v : currentClassStaticVariables.getInstanceVariableList() ) {
+                if ( v.getName().equals( secondId ) )
+                    return new MessageSendToVariable( currentClass, v );
+            }
+            signalError.show( "Identifier " + secondId + " not found." );
+            return null;
+
+
+        }
     }
 
     private WriteStatement writeStatement() {
