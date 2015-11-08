@@ -6,13 +6,11 @@ package ast;
  */
 public class ObjectExpr extends Expr {
 
-    private KraClass classType;
     private Type type;
 
     public ObjectExpr(KraClass classType) {
         super();
-        this.classType = classType;
-        this.type = new ClassType(classType.getName());
+        this.type = classType;
     }
 
     @Override
@@ -26,10 +24,6 @@ public class ObjectExpr extends Expr {
     @Override
     public Type getType() {
         return this.type;
-    }
-
-    public String getClassType() {
-        return this.classType.getCname();
     }
 
 }

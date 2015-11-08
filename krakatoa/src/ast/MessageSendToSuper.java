@@ -44,8 +44,7 @@ public class MessageSendToSuper extends MessageSend {
 
 	//TODO: Return correct type based on Variable or Method.
 	public Type getType() {
-		returnull;
-		n
+		return method.getType();
 	}
 
     public void genC( PW pw, boolean putParenthesis ) {

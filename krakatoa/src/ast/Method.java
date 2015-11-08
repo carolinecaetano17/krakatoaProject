@@ -13,14 +13,13 @@ import java.util.Iterator;
  */
 
 public class Method extends ASTNode {
+    boolean isStatic, isFinal;
     private Type type;
     private String name;
     private ParamList paramList;
     private ArrayList<Statement> statementList;
     private String qualifier;
     private LocalVariableList variableList;
-
-    boolean isStatic, isFinal;
     public Method(String name){ this.name = name;}
     
     public Method(Type type, String name, String qualifier, boolean isStatic, boolean isFinal) {
@@ -52,7 +51,7 @@ public class Method extends ASTNode {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {

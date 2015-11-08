@@ -1,7 +1,6 @@
 package ast;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /* Authors:
  * Caroline Pessoa Caetano - 408247
@@ -9,7 +8,6 @@ import java.util.Objects;
  */
 
 public class KraClass extends Type {
-    private String name;
     private KraClass superclass;
     private InstanceVariableList instanceVariableList;
     private InstanceVariableList staticVariableList;
@@ -52,11 +50,7 @@ public class KraClass extends Type {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return super.getName();
     }
 
     public InstanceVariableList getInstanceVariableList() {
@@ -102,9 +96,9 @@ public class KraClass extends Type {
     public void addMethod(Method newMethod) {
         if (newMethod.isStatic()) {
             this.staticMethodList.add(newMethod);
-        } else if (Objects.equals(newMethod.getQualifier(), "private")) {
+        } else if (newMethod.getQualifier().equals("private")) {
             this.privateMethodList.add(newMethod);
-        } else if (Objects.equals(newMethod.getQualifier(), "public")) {
+        } else if (newMethod.getQualifier().equals("public")) {
             this.publicMethodList.add(newMethod);
         }
 

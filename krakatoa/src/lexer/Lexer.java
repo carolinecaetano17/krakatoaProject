@@ -6,20 +6,6 @@ import java.util.Hashtable;
 
 public class Lexer {
 
-    public Lexer(char[] input, SignalError error) {
-        this.input = input;
-        // add an end-of-file label to make it easy to do the lexer
-        input[input.length - 1] = '\0';
-        // number of the current line
-        lineNumber = 1;
-        tokenPos = 0;
-        lastTokenPos = 0;
-        beforeLastTokenPos = 0;
-        this.error = error;
-        metaobjectName = "";
-    }
-
-
     private static final int MaxValueInteger = 32767;
     // contains the keywords
     static private Hashtable<String, Symbol> keywordsTable;
@@ -56,6 +42,34 @@ public class Lexer {
 
     }
 
+    // current token
+    public Symbol token;
+    private String metaobjectName;
+    private String stringValue, literalStringValue;
+    private int numberValue;
+    private int tokenPos;
+    //  input[lastTokenPos] is the last character of the last token found
+    private int lastTokenPos;
+    //  input[beforeLastTokenPos] is the last character of the token before the last
+    // token found
+    private int beforeLastTokenPos;
+    private char[] input;
+    // number of current line. Starts with 1
+    private int lineNumber;
+    private SignalError error;
+
+    public Lexer(char[] input, SignalError error) {
+        this.input = input;
+        // add an end-of-file label to make it easy to do the lexer
+        input[input.length - 1] = '\0';
+        // number of the current line
+        lineNumber = 1;
+        tokenPos = 0;
+        lastTokenPos = 0;
+        beforeLastTokenPos = 0;
+        this.error = error;
+        metaobjectName = "";
+    }
 
     public void nextToken() {
         char ch;
@@ -274,7 +288,6 @@ public class Lexer {
         return n;
     }
 
-
     public String getCurrentLine() {
         //return getLine(lastTokenPos);
         return getLine(tokenPos);
@@ -330,24 +343,31 @@ public class Lexer {
         return metaobjectName;
     }
 
-    private String metaobjectName;
-    // current token
-    public Symbol token;
-    private String stringValue, literalStringValue;
-    private int numberValue;
+    //Inspirada na função viewNextToken de Vitor Casadei
+    public Symbol peek() {
+        Symbol currentToken = this.token;
+        String currentStringValue = this.stringValue;
+        String currentLiteralStringValue = this.literalStringValue;
+        int currentNumberValue = this.numberValue;
+        int currentTokenPos = this.tokenPos;
+        int lastTokenPosBeforePeek = this.lastTokenPos;
+        int beforeLastTokenPosBeforePeek = this.beforeLastTokenPos;
+        int currentLineNumber = this.lineNumber;
 
-    private int tokenPos;
-    //  input[lastTokenPos] is the last character of the last token found
-    private int lastTokenPos;
-    //  input[beforeLastTokenPos] is the last character of the token before the last
-    // token found
-    private int beforeLastTokenPos;
+        nextToken();
 
-    private char[] input;
+        Symbol futureToken = this.token;
 
-    // number of current line. Starts with 1
-    private int lineNumber;
+        this.token = currentToken;
+        this.stringValue = currentStringValue;
+        this.literalStringValue = currentLiteralStringValue;
+        this.numberValue = currentNumberValue;
+        this.tokenPos = currentTokenPos;
+        this.lastTokenPos = lastTokenPosBeforePeek;
+        this.beforeLastTokenPos = beforeLastTokenPosBeforePeek;
+        this.lineNumber = currentLineNumber;
 
-    private SignalError error;
+        return futureToken;
+    }
 
 }

@@ -14,6 +14,10 @@ public class WhileStatement extends Statement {
         this.stmt = stmt;
     }
 
+    public Statement getStmt() {
+        return stmt;
+    }
+
     public void genC(PW pw) {
 
     }

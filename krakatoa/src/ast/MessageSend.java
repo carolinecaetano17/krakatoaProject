@@ -4,6 +4,6 @@ package ast;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
-abstract class MessageSend extends Expr {
+abstract public class MessageSend extends Expr {
 }
 

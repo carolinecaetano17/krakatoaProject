@@ -42,10 +42,8 @@ public class MessageSendToClass extends MessageSend {
         this.method = method;
     }
 
-    //TODO: Return correct type based on Variable or Method.
     public Type getType() {
-        returnull;
-        n
+        return method.getType();
     }
 
     public void genC(PW pw, boolean putParenthesis) {
