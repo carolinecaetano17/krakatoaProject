@@ -5,13 +5,13 @@ package ast;
  * Henrique Squinello - 408352
  */
 public class TypeString extends Type {
-    
+
     public TypeString() {
-        super("String");
+        super( "String" );
     }
-    
-   public String getCname() {
-      return "char *";
-   }
+
+    public String getCname() {
+        return "char *";
+    }
 
 }

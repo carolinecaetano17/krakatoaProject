@@ -17,8 +17,8 @@ public class KraClass extends Type {
 
     private boolean isFinal;
 
-    public KraClass(String name) {
-        super(name);
+    public KraClass( String name ) {
+        super( name );
         this.publicMethodList = new ArrayList<Method>();
         this.privateMethodList = new ArrayList<Method>();
         this.staticMethodList = new ArrayList<Method>();
@@ -26,8 +26,8 @@ public class KraClass extends Type {
         this.superclass = null;
     }
 
-    public KraClass(String name, boolean isFinal) {
-        super(name);
+    public KraClass( String name, boolean isFinal ) {
+        super( name );
         this.publicMethodList = new ArrayList<Method>();
         this.privateMethodList = new ArrayList<Method>();
         this.staticMethodList = new ArrayList<Method>();
@@ -36,7 +36,7 @@ public class KraClass extends Type {
     }
 
     public String getCname() {
-        return getName();
+        return "_class_" + getName();
     }
     // métodos públicos get e set para obter e iniciar as variáveis acima,
     // entre outros métodos
@@ -45,7 +45,7 @@ public class KraClass extends Type {
         return superclass;
     }
 
-    public void setSuperclass(KraClass superclass) {
+    public void setSuperclass( KraClass superclass ) {
         this.superclass = superclass;
     }
 
@@ -57,7 +57,7 @@ public class KraClass extends Type {
         return instanceVariableList;
     }
 
-    public void setInstanceVariableList(InstanceVariableList instanceVariableList) {
+    public void setInstanceVariableList( InstanceVariableList instanceVariableList ) {
         this.instanceVariableList = instanceVariableList;
     }
 
@@ -65,7 +65,7 @@ public class KraClass extends Type {
         return staticVariableList;
     }
 
-    public void setStaticVariableList(InstanceVariableList staticVariableList) {
+    public void setStaticVariableList( InstanceVariableList staticVariableList ) {
         this.staticVariableList = staticVariableList;
     }
 
@@ -73,7 +73,7 @@ public class KraClass extends Type {
         return publicMethodList;
     }
 
-    public void setPublicMethodList(ArrayList<Method> publicMethodList) {
+    public void setPublicMethodList( ArrayList<Method> publicMethodList ) {
         this.publicMethodList = publicMethodList;
     }
 
@@ -81,7 +81,7 @@ public class KraClass extends Type {
         return privateMethodList;
     }
 
-    public void setPrivateMethodList(ArrayList<Method> privateMethodList) {
+    public void setPrivateMethodList( ArrayList<Method> privateMethodList ) {
         this.privateMethodList = privateMethodList;
     }
 
@@ -89,22 +89,74 @@ public class KraClass extends Type {
         return staticMethodList;
     }
 
-    public void setStaticMethodList(ArrayList<Method> staticMethodList) {
+    public void setStaticMethodList( ArrayList<Method> staticMethodList ) {
         this.staticMethodList = staticMethodList;
     }
 
-    public void addMethod(Method newMethod) {
-        if (newMethod.isStatic()) {
-            this.staticMethodList.add(newMethod);
-        } else if (newMethod.getQualifier().equals("private")) {
-            this.privateMethodList.add(newMethod);
-        } else if (newMethod.getQualifier().equals("public")) {
-            this.publicMethodList.add(newMethod);
+    public void addMethod( Method newMethod ) {
+        if ( newMethod.isStatic() ) {
+            this.staticMethodList.add( newMethod );
+        } else if ( newMethod.getQualifier().equals( "private" ) ) {
+            this.privateMethodList.add( newMethod );
+        } else if ( newMethod.getQualifier().equals( "public" ) ) {
+            this.publicMethodList.add( newMethod );
         }
 
     }
 
     public boolean isFinal() {
         return isFinal;
+    }
+
+    public void genC( PW pw, boolean putParenthesis ) {
+        //Gera estrutura da classe
+        pw.println( "typedef struct _St_" + this.getName() + " {" );
+        pw.add();
+        pw.printlnIdent( "Func *vt;" );
+        this.instanceVariableList.genC( pw );
+        this.staticVariableList.genC( pw );
+        pw.sub();
+        pw.println( "} " + getCname() + ";" );
+
+        //Gera protótipo de new
+        pw.println( getCname() + " *new_" + this.getName() + "(void);" );
+        pw.println( "" );
+
+        //Gera os métodos
+        for ( Method m : this.publicMethodList ) {
+            m.genC( pw, this );
+            pw.println( "" );
+        }
+        for ( Method m : this.privateMethodList ) {
+            m.genC( pw, this );
+            pw.println( "" );
+        }
+        for ( Method m : this.staticMethodList ) {
+            m.genC( pw, this );
+            pw.println( "" );
+        }
+
+        //Gera o vetor de funções
+        pw.println( "Func VTclass_" + getName() + "[] = {" );
+        pw.add();
+        for ( Method m : this.publicMethodList )
+            pw.printlnIdent( "( void (*)() ) _" + getName() + "_" + m.getName() );
+        pw.sub();
+        pw.println( "};" );
+        pw.println( "" );
+
+        //Gera o método new
+        pw.println( getCname() + " *new_" + this.getName() + "()" );
+        pw.println( "{" );
+        pw.add();
+        pw.printlnIdent( getCname() + " *t;" );
+        pw.println( "" );
+        pw.printlnIdent( "if ( (t = malloc(sizeof(" + getCname() + "))) != NULL )" );
+        pw.add();
+        pw.printlnIdent( "t->vt = VTclass_" + getName() + ";" );
+        pw.sub();
+        pw.printlnIdent( "return t;" );
+        pw.sub();
+        pw.println( "}" );
     }
 }

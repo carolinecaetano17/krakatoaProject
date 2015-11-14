@@ -12,15 +12,15 @@ public class CompositeStatement extends Statement {
     private boolean hasBreakStatement;
     private boolean hasVarDeclarations;
 
-    public CompositeStatement(ArrayList<Statement> stmts) {
+    public CompositeStatement( ArrayList<Statement> stmts ) {
         this.statementList = stmts;
-        for (Statement s : this.statementList) {
-            if (s instanceof BreakStatement)
+        for ( Statement s : this.statementList ) {
+            if ( s instanceof BreakStatement )
                 this.hasBreakStatement = true;
             else
                 this.hasBreakStatement = false;
 
-            if (s instanceof EmptyStatement)
+            if ( s instanceof EmptyStatement )
                 this.hasVarDeclarations = true;
             else
                 this.hasVarDeclarations = false;
@@ -35,7 +35,12 @@ public class CompositeStatement extends Statement {
         return hasVarDeclarations;
     }
 
-    public void genC(PW pw) {
-
+    public void genC( PW pw ) {
+        pw.printlnIdent( "{" );
+        pw.add();
+        for ( Statement s : statementList )
+            s.genC( pw );
+        pw.sub();
+        pw.printlnIdent( "}" );
     }
 }

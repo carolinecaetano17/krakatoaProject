@@ -30,50 +30,50 @@ public class SymbolTable {
         this.localVariableTable = new HashMap<String, Variable>();
     }
 
-    public Object putInGlobal(String key, KraClass value) {
-        return globalTable.put(key, value);
+    public Object putInGlobal( String key, KraClass value ) {
+        return globalTable.put( key, value );
     }
 
-    public KraClass getInGlobal(String key) {
-        return globalTable.get(key);
+    public KraClass getInGlobal( String key ) {
+        return globalTable.get( key );
     }
 
-    public Variable putInstanceVar(String key, InstanceVariable value) {
-        if (value.isStatic())
-            return staticVariableTable.put(key, value);
+    public Variable putInstanceVar( String key, InstanceVariable value ) {
+        if ( value.isStatic() )
+            return staticVariableTable.put( key, value );
         else
-            return instanceVariableTable.put(key, value);
+            return instanceVariableTable.put( key, value );
     }
 
-    public Variable getInstanceVar(String key) {
-        return instanceVariableTable.get(key);
+    public Variable getInstanceVar( String key ) {
+        return instanceVariableTable.get( key );
     }
 
-    public Variable getStaticVar(String key) {
-        return staticVariableTable.get(key);
+    public Variable getStaticVar( String key ) {
+        return staticVariableTable.get( key );
     }
 
-    public Variable putLocalVar(String key, Variable value) {
-        return localVariableTable.put(key, value);
+    public Variable putLocalVar( String key, Variable value ) {
+        return localVariableTable.put( key, value );
     }
 
-    public Variable getLocalVar(String key) {
-        return localVariableTable.get(key);
+    public Variable getLocalVar( String key ) {
+        return localVariableTable.get( key );
     }
 
-    public Method putMethod(String key, Method value) {
-        if (value.isStatic())
-            return staticMethodTable.put(key, value);
+    public Method putMethod( String key, Method value ) {
+        if ( value.isStatic() )
+            return staticMethodTable.put( key, value );
         else
-            return methodTable.put(key, value);
+            return methodTable.put( key, value );
     }
 
-    public Method getMethod(String key) {
-        return methodTable.get(key);
+    public Method getMethod( String key ) {
+        return methodTable.get( key );
     }
 
-    public Method getStaticMethod(String key) {
-        return staticMethodTable.get(key);
+    public Method getStaticMethod( String key ) {
+        return staticMethodTable.get( key );
     }
 
     public void removeInstanceIdents() {

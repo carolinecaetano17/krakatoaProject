@@ -5,14 +5,15 @@ package ast;
  * Henrique Squinello - 408352
  */
 public class CompositeExprStatement extends Statement {
-    public CompositeExprStatement(Expr compositeExpr) {
+    private Expr compExpr;
+
+    public CompositeExprStatement( Expr compositeExpr ) {
         this.compExpr = compositeExpr;
     }
 
     @Override
-    public void genC(PW pw) {
-        this.compExpr.genC(pw, false);
+    public void genC( PW pw ) {
+        pw.printIdent( "" );
+        this.compExpr.genC( pw, false );
     }
-
-    private Expr compExpr;
 }

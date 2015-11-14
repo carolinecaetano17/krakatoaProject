@@ -1,5 +1,7 @@
 package ast;
 
+import java.util.ArrayList;
+
 /* Authors:
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
@@ -7,7 +9,7 @@ package ast;
 public class WriteStatement extends Statement {
     private ExprList exprList;
 
-    public WriteStatement(ExprList list) {
+    public WriteStatement( ExprList list ) {
         this.exprList = list;
     }
 
@@ -15,13 +17,23 @@ public class WriteStatement extends Statement {
         return exprList;
     }
 
-    public void setExprList(ExprList exprList) {
+    public void setExprList( ExprList exprList ) {
         this.exprList = exprList;
     }
 
     @Override
-    public void genC(PW pw) {
-        // TODO Auto-generated method stub
-
+    public void genC( PW pw ) {
+        ArrayList<Expr> expressions = exprList.getExprList();
+        for ( Expr e : expressions ) {
+            if ( e.getType() == Type.stringType ) {
+                pw.printIdent( "puts( " );
+                e.genC( pw, true );
+                pw.println( " );" );
+            } else {
+                pw.printIdent( "printf( \"%d \", " );
+                e.genC( pw, true );
+                pw.println( " );" );
+            }
+        }
     }
 }

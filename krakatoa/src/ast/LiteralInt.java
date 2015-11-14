@@ -5,21 +5,22 @@ package ast;
  * Henrique Squinello - 408352
  */
 public class LiteralInt extends Expr {
-    
-    public LiteralInt( int value ) { 
+
+    private int value;
+
+    public LiteralInt( int value ) {
         this.value = value;
     }
-    
+
     public int getValue() {
         return value;
     }
+
     public void genC( PW pw, boolean putParenthesis ) {
-        pw.printIdent("" + value);
+        pw.print( "" + value );
     }
-    
+
     public Type getType() {
         return Type.intType;
     }
-    
-    private int value;
 }

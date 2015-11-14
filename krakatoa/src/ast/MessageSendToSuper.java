@@ -7,52 +7,52 @@ package ast;
 
 public class MessageSendToSuper extends MessageSend {
 
-	Method method;
-	private KraClass to;
-	private KraClass from;
-	
-	public MessageSendToSuper(KraClass to, KraClass from, Method method) {
-		super();
-		this.to = to;
-		this.from = from;
-		this.method = method;
-	}
+    Method method;
+    private KraClass to;
+    private KraClass from;
+
+    public MessageSendToSuper( KraClass to, KraClass from, Method method ) {
+        super();
+        this.to = to;
+        this.from = from;
+        this.method = method;
+    }
 
     public KraClass getTo() {
-		return to;
-	}
+        return to;
+    }
 
-	public void setTo(KraClass to) {
-		this.to = to;
-	}
+    public void setTo( KraClass to ) {
+        this.to = to;
+    }
 
-	public KraClass getFrom() {
-		return from;
-	}
+    public KraClass getFrom() {
+        return from;
+    }
 
-	public void setFrom(KraClass from) {
-		this.from = from;
-	}
+    public void setFrom( KraClass from ) {
+        this.from = from;
+    }
 
-	public Method getMethod() {
-		return method;
-	}
+    public Method getMethod() {
+        return method;
+    }
 
-	public void setMethod(Method method) {
-		this.method = method;
-	}
+    public void setMethod( Method method ) {
+        this.method = method;
+    }
 
-	//TODO: Return correct type based on Variable or Method.
-	public Type getType() {
-		return method.getType();
-	}
+    //TODO: Return correct type based on Variable or Method.
+    public Type getType() {
+        return method.getType();
+    }
 
     public void genC( PW pw, boolean putParenthesis ) {
-        
+
     }
-    
-    public void genKra(){
-    	//System.out.println("super." + this.method.getName() + "();");
+
+    public void genKra() {
+        //System.out.println("super." + this.method.getName() + "();");
     }
-    
+
 }

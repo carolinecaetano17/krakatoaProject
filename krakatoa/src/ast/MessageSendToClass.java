@@ -11,7 +11,7 @@ public class MessageSendToClass extends MessageSend {
     private KraClass to;
     private KraClass from;
 
-    public MessageSendToClass(KraClass to, KraClass from, Method method) {
+    public MessageSendToClass( KraClass to, KraClass from, Method method ) {
         super();
         this.to = to;
         this.from = from;
@@ -22,7 +22,7 @@ public class MessageSendToClass extends MessageSend {
         return to;
     }
 
-    public void setTo(KraClass to) {
+    public void setTo( KraClass to ) {
         this.to = to;
     }
 
@@ -30,7 +30,7 @@ public class MessageSendToClass extends MessageSend {
         return from;
     }
 
-    public void setFrom(KraClass from) {
+    public void setFrom( KraClass from ) {
         this.from = from;
     }
 
@@ -38,7 +38,7 @@ public class MessageSendToClass extends MessageSend {
         return method;
     }
 
-    public void setMethod(Method method) {
+    public void setMethod( Method method ) {
         this.method = method;
     }
 
@@ -46,7 +46,7 @@ public class MessageSendToClass extends MessageSend {
         return method.getType();
     }
 
-    public void genC(PW pw, boolean putParenthesis) {
+    public void genC( PW pw, boolean putParenthesis ) {
 
     }
 

@@ -6,8 +6,10 @@ package ast;
  */
 
 public class EmptyStatement extends Statement {
-	
-	public void genKra(){}
-	
-	public void genC(PW pw){}
+
+    public void genKra() {
+    }
+
+    public void genC( PW pw ) {
+    }
 }

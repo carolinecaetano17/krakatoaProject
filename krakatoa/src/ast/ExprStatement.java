@@ -5,14 +5,14 @@ package ast;
  * Henrique Squinello - 408352
  */
 public class ExprStatement extends Statement {
-    public ExprStatement(Expr expr) {
+    private Expr expr;
+
+    public ExprStatement( Expr expr ) {
         this.expr = expr;
     }
 
     @Override
-    public void genC(PW pw) {
-        this.expr.genC(pw, false);
+    public void genC( PW pw ) {
+        this.expr.genC( pw, false );
     }
-
-    private Expr expr;
 }

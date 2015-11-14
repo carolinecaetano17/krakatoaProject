@@ -5,13 +5,13 @@ package ast;
  * Henrique Squinello - 408352
  */
 public class TypeInt extends Type {
-    
+
     public TypeInt() {
-        super("int");
+        super( "int" );
     }
-    
-   public String getCname() {
-      return "int";
-   }
+
+    public String getCname() {
+        return "int";
+    }
 
 }

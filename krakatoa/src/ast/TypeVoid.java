@@ -6,13 +6,13 @@ package ast;
  */
 
 public class TypeVoid extends Type {
-    
+
     public TypeVoid() {
-        super("void");
+        super( "void" );
     }
-    
-   public String getCname() {
-      return "void";
-   }
+
+    public String getCname() {
+        return "void";
+    }
 
 }

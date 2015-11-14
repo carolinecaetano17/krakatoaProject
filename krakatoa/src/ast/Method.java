@@ -4,6 +4,7 @@ package ast;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -20,9 +21,12 @@ public class Method extends ASTNode {
     private ArrayList<Statement> statementList;
     private String qualifier;
     private LocalVariableList variableList;
-    public Method(String name){ this.name = name;}
-    
-    public Method(Type type, String name, String qualifier, boolean isStatic, boolean isFinal) {
+
+    public Method( String name ) {
+        this.name = name;
+    }
+
+    public Method( Type type, String name, String qualifier, boolean isStatic, boolean isFinal ) {
         super();
         this.type = type;
         this.name = name;
@@ -38,7 +42,7 @@ public class Method extends ASTNode {
         return qualifier;
     }
 
-    public void setQualifier(String qualifier) {
+    public void setQualifier( String qualifier ) {
         this.qualifier = qualifier;
     }
 
@@ -46,7 +50,7 @@ public class Method extends ASTNode {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType( Type type ) {
         this.type = type;
     }
 
@@ -54,7 +58,7 @@ public class Method extends ASTNode {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName( String name ) {
         this.name = name;
     }
 
@@ -62,7 +66,7 @@ public class Method extends ASTNode {
         return paramList;
     }
 
-    public void setParamList(ParamList paramList) {
+    public void setParamList( ParamList paramList ) {
         this.paramList = paramList;
     }
 
@@ -70,12 +74,12 @@ public class Method extends ASTNode {
         return statementList;
     }
 
-    public void setStatementList(ArrayList<Statement> statementList) {
+    public void setStatementList( ArrayList<Statement> statementList ) {
         this.statementList = statementList;
     }
 
-    public void addElement(Variable v) {
-        this.variableList.addElement(v);
+    public void addElement( Variable v ) {
+        this.variableList.addElement( v );
     }
 
     public Iterator<Variable> elements() {
@@ -85,7 +89,7 @@ public class Method extends ASTNode {
     public int getSize() {
         return this.variableList.getSize();
     }
-    
+
     public int getParamListSize() {
         return this.paramList.getSize();
     }
@@ -94,7 +98,7 @@ public class Method extends ASTNode {
         return isStatic;
     }
 
-    public void setIsStatic(boolean isStatic) {
+    public void setIsStatic( boolean isStatic ) {
         this.isStatic = isStatic;
     }
 
@@ -102,15 +106,32 @@ public class Method extends ASTNode {
         return isFinal;
     }
 
-    public void setIsFinal(boolean isFinal) {
+    public void setIsFinal( boolean isFinal ) {
         this.isFinal = isFinal;
     }
 
-    public boolean varExist(Variable v) {
-        if (this.variableList.getList().contains(v)) {
+    public boolean varExist( Variable v ) {
+        if ( this.variableList.getList().contains( v ) ) {
             return true;
         }
         return false;
+    }
+
+    public void genC( PW pw, KraClass declaringClass ) {
+        pw.print( type.getName() + " _" + declaringClass.getName() + "_" + this.getName() + "( " + declaringClass.getCname() + " *this " );
+        if ( paramList.getSize() != 0 ) {
+            paramList.genC( pw );
+        }
+        pw.println( " )" );
+        pw.println( "{" );
+        pw.add();
+        this.variableList.genC( pw );
+        pw.println( "" );
+        for ( Statement st : statementList )
+            st.genC( pw );
+        pw.println( "" );
+        pw.sub();
+        pw.printlnIdent( "}" );
     }
 
 }

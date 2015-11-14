@@ -8,17 +8,14 @@ public class ObjectExpr extends Expr {
 
     private Type type;
 
-    public ObjectExpr(KraClass classType) {
+    public ObjectExpr( KraClass classType ) {
         super();
         this.type = classType;
     }
 
     @Override
-    public void genC(PW pw, boolean putParenthesis) {
-        // TODO Auto-generated method stub
-        //Create an object of this.classType
-        //System.out.println("new " + this.classType.getName() + "();");
-
+    public void genC( PW pw, boolean putParenthesis ) {
+        pw.print( "new_" + type.getName() + "()" );
     }
 
     @Override

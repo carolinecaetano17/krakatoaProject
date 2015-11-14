@@ -90,7 +90,6 @@ public class Compiler {
             signalError.show( "No class Program with a public, parameterless method called run found." );
 
         } catch ( Exception e ) {
-            //e.printStackTrace();
             // if there was an exception, there is a compilation signalError
         }
 
@@ -774,10 +773,6 @@ public class Compiler {
 
             }
 
-            if ( lexer.token != Symbol.SEMICOLON )
-                signalError.show( "';' expected", true );
-            else
-                lexer.nextToken();
         }
 
         if ( left instanceof MessageSendToClass && left.getType() != Type.voidType ) {
@@ -787,6 +782,11 @@ public class Compiler {
         if ( left instanceof MessageSendToSuper && left.getType() != Type.voidType ) {
             signalError.show( "Message send returns a value that is not used" );
         }
+
+        if ( lexer.token != Symbol.SEMICOLON )
+            signalError.show( "';' expected", true );
+        else
+            lexer.nextToken();
 
         if ( right != null )
             return new CompositeExprStatement( new CompositeExpr( left, Symbol.ASSIGN, right ) );

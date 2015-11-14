@@ -8,29 +8,29 @@ package ast;
 import java.util.ArrayList;
 
 public class ExprList {
-	
+
     private ArrayList<Expr> exprList;
 
     public ExprList() {
         exprList = new ArrayList<Expr>();
     }
 
-    public void addElement(Expr expr) {
-        exprList.add(expr);
+    public void addElement( Expr expr ) {
+        exprList.add( expr );
     }
 
-    public void genC(PW pw) {
+    public void genC( PW pw ) {
 
         int size = exprList.size();
-        for (Expr e : exprList) {
-            e.genC(pw, false);
-            if (--size > 0)
-                pw.print(", ");
+        for ( Expr e : exprList ) {
+            e.genC( pw, false );
+            if ( --size > 0 )
+                pw.print( ", " );
         }
     }
 
-	public ArrayList<Expr> getExprList() {
-		return exprList;
-	}
+    public ArrayList<Expr> getExprList() {
+        return exprList;
+    }
 
 }

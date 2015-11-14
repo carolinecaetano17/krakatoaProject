@@ -5,46 +5,85 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-import java.util.*;
-
 import comp.CompilationError;
 
-public class Program extends ASTNode{
-	
-	private ArrayList<KraClass> classList;
-	private ArrayList<MetaobjectCall> metaobjectCallList;
-	ArrayList<CompilationError> compilationErrorList;
+import java.util.ArrayList;
 
-	public Program(ArrayList<KraClass> classList, ArrayList<MetaobjectCall> metaobjectCallList, 
-			       ArrayList<CompilationError> compilationErrorList) {
-		this.classList = classList;
-		this.metaobjectCallList = metaobjectCallList;
-		this.compilationErrorList = compilationErrorList;
-	}
+public class Program extends ASTNode {
 
+    ArrayList<CompilationError> compilationErrorList;
+    private ArrayList<KraClass> classList;
+    private ArrayList<MetaobjectCall> metaobjectCallList;
 
-	public void genKra(PW pw) {
-	}
-
-	public void genC(PW pw) {
-	}
-	
-	public ArrayList<KraClass> getClassList() {
-		return classList;
-	}
+    public Program( ArrayList<KraClass> classList, ArrayList<MetaobjectCall> metaobjectCallList,
+                    ArrayList<CompilationError> compilationErrorList ) {
+        this.classList = classList;
+        this.metaobjectCallList = metaobjectCallList;
+        this.compilationErrorList = compilationErrorList;
+    }
 
 
-	public ArrayList<MetaobjectCall> getMetaobjectCallList() {
-		return metaobjectCallList;
-	}
-	
+    public void genKra( PW pw ) {
+    }
 
-	public boolean hasCompilationErrors() {
-		return compilationErrorList != null && compilationErrorList.size() > 0 ;
-	}
+    public void genC( PW pw ) {
+        int programRunFunctionNumber = -1;
 
-	public ArrayList<CompilationError> getCompilationErrorList() {
-		return compilationErrorList;
-	}
+        //Declara headers necessários para a tradução
+        pw.println( "#include <malloc.h>" );
+        pw.println( "#include <stdlib.h>" );
+        pw.println( "#include <stdio.h>" );
+        pw.println( "" );
+        pw.println( "typedef int boolean;" );
+        pw.println( "#define true 1" );
+        pw.println( "#define false 0" );
+        pw.println( "" );
+        pw.println( "typedef void (*Func)();" );
+        pw.println( "" );
+
+        //Gera o código de todas as classes
+        for ( KraClass kc : classList ) {
+            //Usado para pegar o índice correto do método run
+            if ( kc.getName().equals( "Program" ) ) {
+                ArrayList<Method> methods = kc.getPublicMethodList();
+                for ( Method m : methods ) {
+                    if ( m.getName().equals( "run" ) )
+                        programRunFunctionNumber = methods.indexOf( m );
+
+                }
+            }
+            kc.genC( pw, false );
+            pw.println( "" );
+        }
+
+        //Gera o método principal
+        pw.println( "int main () {" );
+        pw.add();
+        pw.printlnIdent( "_class_Program *program;" );
+        pw.printlnIdent( "" );
+        pw.printlnIdent( "program = new_Program();" );
+        pw.printlnIdent( "( ( void (*)(_class_Program *) ) program->vt[" + programRunFunctionNumber + "] )(program);" );
+        pw.printlnIdent( "return 0;" );
+        pw.sub();
+        pw.println( "}" );
+    }
+
+    public ArrayList<KraClass> getClassList() {
+        return classList;
+    }
+
+
+    public ArrayList<MetaobjectCall> getMetaobjectCallList() {
+        return metaobjectCallList;
+    }
+
+
+    public boolean hasCompilationErrors() {
+        return compilationErrorList != null && compilationErrorList.size() > 0;
+    }
+
+    public ArrayList<CompilationError> getCompilationErrorList() {
+        return compilationErrorList;
+    }
 
 }

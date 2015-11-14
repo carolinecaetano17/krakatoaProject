@@ -5,18 +5,19 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class ParamList {
-	
-	private ArrayList<Variable> paramList;
+
+    private ArrayList<Variable> paramList;
 
     public ParamList() {
-       paramList = new ArrayList<Variable>();
+        paramList = new ArrayList<Variable>();
     }
 
-    public void addElement(Variable v) {
-       paramList.add(v);
+    public void addElement( Variable v ) {
+        paramList.add( v );
     }
 
     public Iterator<Variable> elements() {
@@ -27,10 +28,16 @@ public class ParamList {
         return paramList.size();
     }
 
-	public ArrayList<Variable> getParamList() {
-		return paramList;
-	}
+    public ArrayList<Variable> getParamList() {
+        return paramList;
+    }
 
-    
+    public void genC( PW pw ) {
+        for ( Variable v : paramList ) {
+            pw.print( ", " );
+            pw.print( v.getType().getCname() + " _" + v.getName() );
+        }
+    }
+
 
 }

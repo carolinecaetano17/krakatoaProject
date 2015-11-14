@@ -7,12 +7,12 @@ package ast;
 public class TypeBoolean extends Type {
 
     public TypeBoolean() {
-        super("boolean");
+        super( "boolean" );
     }
 
     @Override
     public String getCname() {
-        return "int";
+        return "boolean";
     }
 
 }

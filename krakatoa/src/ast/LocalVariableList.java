@@ -8,14 +8,16 @@ package ast;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class LocalVariableList extends Statement{
+public class LocalVariableList extends Statement {
+
+    private ArrayList<Variable> localList;
 
     public LocalVariableList() {
-       localList = new ArrayList<Variable>();
+        localList = new ArrayList<Variable>();
     }
 
-    public void addElement(Variable v) {
-       localList.add(v);
+    public void addElement( Variable v ) {
+        localList.add( v );
     }
 
     public Iterator<Variable> elements() {
@@ -26,12 +28,17 @@ public class LocalVariableList extends Statement{
         return localList.size();
     }
 
-    private ArrayList<Variable> localList;
-    
-    public void genC(PW pw){}
-    
-    public ArrayList<Variable> getList(){
-    	return this.localList;
+    public void genC( PW pw ) {
+        for ( Variable v : localList ) {
+            pw.printIdent( v.getType().getCname() );
+            if ( v.getType() instanceof KraClass )
+                pw.print( " *" );
+            pw.println( " _" + v.getName() + ";" );
+        }
+    }
+
+    public ArrayList<Variable> getList() {
+        return this.localList;
     }
 
 }

@@ -5,7 +5,7 @@ package ast;
  * Henrique Squinello - 408352
  */
 public class NullStatement extends Statement {
-    public void genC(PW pw) {
-
+    public void genC( PW pw ) {
+        pw.println( "NULL;" );
     }
 }

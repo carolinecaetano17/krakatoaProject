@@ -5,8 +5,9 @@ package ast;
  * Henrique Squinello - 408352
  */
 
-abstract public class Expr extends ASTNode{
+abstract public class Expr extends ASTNode {
     abstract public void genC( PW pw, boolean putParenthesis );
-      // new method: the type of the expression
+
+    // new method: the type of the expression
     abstract public Type getType();
 }
