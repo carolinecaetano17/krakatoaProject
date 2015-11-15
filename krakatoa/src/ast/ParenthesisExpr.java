@@ -4,6 +4,7 @@ package ast;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 public class ParenthesisExpr extends Expr {
 
     private Expr expr;
@@ -15,7 +16,7 @@ public class ParenthesisExpr extends Expr {
     public void genC( PW pw, boolean putParenthesis ) {
         pw.print( "(" );
         expr.genC( pw, true );
-        pw.printIdent( ")" );
+        pw.print( ")" );
     }
 
     public Type getType() {

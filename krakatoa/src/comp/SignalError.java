@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 public class SignalError {
 
 

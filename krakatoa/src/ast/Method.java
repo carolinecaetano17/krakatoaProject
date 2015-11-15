@@ -6,15 +6,9 @@ package ast;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
-/* Authors:
- * Caroline Pessoa Caetano - 408247
- * Henrique Squinello - 408352
- */
 
 public class Method extends ASTNode {
-    boolean isStatic, isFinal;
+    private boolean isStatic, isFinal;
     private Type type;
     private String name;
     private ParamList paramList;
@@ -42,10 +36,6 @@ public class Method extends ASTNode {
         return qualifier;
     }
 
-    public void setQualifier( String qualifier ) {
-        this.qualifier = qualifier;
-    }
-
     public Type getType() {
         return type;
     }
@@ -56,10 +46,6 @@ public class Method extends ASTNode {
 
     public String getName() {
         return this.name;
-    }
-
-    public void setName( String name ) {
-        this.name = name;
     }
 
     public ParamList getParamList() {
@@ -82,14 +68,6 @@ public class Method extends ASTNode {
         this.variableList.addElement( v );
     }
 
-    public Iterator<Variable> elements() {
-        return this.variableList.elements();
-    }
-
-    public int getSize() {
-        return this.variableList.getSize();
-    }
-
     public int getParamListSize() {
         return this.paramList.getSize();
     }
@@ -98,29 +76,24 @@ public class Method extends ASTNode {
         return isStatic;
     }
 
-    public void setIsStatic( boolean isStatic ) {
-        this.isStatic = isStatic;
-    }
-
     public boolean isFinal() {
         return isFinal;
     }
 
-    public void setIsFinal( boolean isFinal ) {
-        this.isFinal = isFinal;
-    }
-
-    public boolean varExist( Variable v ) {
-        if ( this.variableList.getList().contains( v ) ) {
-            return true;
-        }
-        return false;
-    }
-
     public void genC( PW pw, KraClass declaringClass ) {
-        pw.print( type.getName() + " _" + declaringClass.getName() + "_" + this.getName() + "( " + declaringClass.getCname() + " *this " );
+        if ( isStatic ) {
+            if ( type instanceof KraClass )
+                pw.print( type.getCname() + " * _static_" + declaringClass.getName() + "_" + this.getName() + "( " );
+            else
+                pw.print( type.getCname() + " _static_" + declaringClass.getName() + "_" + this.getName() + "( " );
+        } else if ( type instanceof KraClass )
+            pw.print( type.getCname() + " * _" + declaringClass.getName() + "_" + this.getName() + "( " + declaringClass.getCname() + " *this " );
+        else
+            pw.print( type.getCname() + " _" + declaringClass.getName() + "_" + this.getName() + "( " + declaringClass.getCname() + " *this " );
         if ( paramList.getSize() != 0 ) {
-            paramList.genC( pw );
+            if ( !isStatic )
+                pw.print( ", " );
+            paramList.genC( pw, isStatic );
         }
         pw.println( " )" );
         pw.println( "{" );

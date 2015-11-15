@@ -4,6 +4,7 @@ package ast;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 public class LiteralString extends Expr {
 
     private String literalString;

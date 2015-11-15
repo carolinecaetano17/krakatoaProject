@@ -6,7 +6,6 @@ package ast;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class ParamList {
 
@@ -20,10 +19,6 @@ public class ParamList {
         paramList.add( v );
     }
 
-    public Iterator<Variable> elements() {
-        return paramList.iterator();
-    }
-
     public int getSize() {
         return paramList.size();
     }
@@ -32,10 +27,27 @@ public class ParamList {
         return paramList;
     }
 
-    public void genC( PW pw ) {
+    public void genC( PW pw, boolean isStatic ) {
+        int size = paramList.size();
         for ( Variable v : paramList ) {
-            pw.print( ", " );
-            pw.print( v.getType().getCname() + " _" + v.getName() );
+            if ( v.getType() instanceof KraClass )
+                pw.print( v.getType().getCname() + " * _" + v.getName() );
+            else
+                pw.print( v.getType().getCname() + " _" + v.getName() );
+            if ( --size > 0 )
+                pw.print( ", " );
+        }
+    }
+
+    public void genCTypesOnly( PW pw ) {
+        int size = paramList.size();
+        for ( Variable v : paramList ) {
+            if ( v.getType() instanceof KraClass )
+                pw.print( v.getType().getCname() + " *" );
+            else
+                pw.print( v.getType().getCname() );
+            if ( --size > 0 )
+                pw.print( ", " );
         }
     }
 

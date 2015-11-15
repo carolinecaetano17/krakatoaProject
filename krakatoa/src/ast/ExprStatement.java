@@ -4,6 +4,7 @@ package ast;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 public class ExprStatement extends Statement {
     private Expr expr;
 
@@ -14,5 +15,6 @@ public class ExprStatement extends Statement {
     @Override
     public void genC( PW pw ) {
         this.expr.genC( pw, false );
+        pw.println( ";" );
     }
 }

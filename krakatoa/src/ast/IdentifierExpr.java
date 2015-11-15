@@ -14,14 +14,6 @@ public class IdentifierExpr extends Expr {
         this.localVar = localVar;
     }
 
-    public Variable getLocalVar() {
-        return localVar;
-    }
-
-    public void setLocalVar( Variable localVar ) {
-        this.localVar = localVar;
-    }
-
     @Override
     public void genC( PW pw, boolean putParenthesis ) {
         if ( putParenthesis )

@@ -4,16 +4,13 @@ package ast;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 public class LiteralInt extends Expr {
 
     private int value;
 
     public LiteralInt( int value ) {
         this.value = value;
-    }
-
-    public int getValue() {
-        return value;
     }
 
     public void genC( PW pw, boolean putParenthesis ) {

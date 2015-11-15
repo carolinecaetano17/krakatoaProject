@@ -6,7 +6,6 @@ package ast;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class InstanceVariableList {
 
@@ -20,21 +19,8 @@ public class InstanceVariableList {
         instanceVariableList.add( instanceVariable );
     }
 
-    public Iterator<InstanceVariable> elements() {
-        return this.instanceVariableList.iterator();
-    }
-
-    public int getSize() {
-        return instanceVariableList.size();
-    }
-
     public ArrayList<InstanceVariable> getInstanceVariableList() {
         return instanceVariableList;
-    }
-
-    public void setInstanceVariableList(
-            ArrayList<InstanceVariable> instanceVariableList ) {
-        this.instanceVariableList = instanceVariableList;
     }
 
     //Join two different lists within InstanceVariableList passed and this one
@@ -42,9 +28,9 @@ public class InstanceVariableList {
         this.instanceVariableList.addAll( list.getInstanceVariableList() );
     }
 
-    public void genC( PW pw ) {
+    public void genC( PW pw, String className ) {
         for ( InstanceVariable iv : instanceVariableList )
-            iv.genC( pw );
+            iv.genC( pw, className );
     }
 
 

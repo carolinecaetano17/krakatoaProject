@@ -4,6 +4,7 @@ package comp;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 public class CompilerOptions {
 
     private boolean count, outputInterface, extractClass;

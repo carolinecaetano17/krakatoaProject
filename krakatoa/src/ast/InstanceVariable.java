@@ -4,6 +4,7 @@ package ast;
  * Caroline Pessoa Caetano - 408247
  * Henrique Squinello - 408352
  */
+
 public class InstanceVariable extends Variable {
     private boolean isStatic;
 
@@ -19,7 +20,20 @@ public class InstanceVariable extends Variable {
         this.isStatic = isStatic;
     }
 
-    public void genC( PW pw ) {
-        pw.printlnIdent( getType().getName() + " " + getName() + ";" );
+    public void genC( PW pw, String className ) {
+
+        if ( getType().getName().equals( className ) && !isStatic )
+            pw.printIdent( "struct _St_" + className + " " );
+        else
+            pw.printIdent( getType().getCname() + " " );
+
+        if ( getType() instanceof KraClass )
+            pw.print( "* " );
+
+        if ( isStatic )
+            pw.print( "_static" );
+        pw.print( "_" + className );
+
+        pw.println( "_" + getName() + ";" );
     }
 }

@@ -23,7 +23,7 @@ public class ExprList {
 
         int size = exprList.size();
         for ( Expr e : exprList ) {
-            e.genC( pw, false );
+            e.genC( pw, true );
             if ( --size > 0 )
                 pw.print( ", " );
         }

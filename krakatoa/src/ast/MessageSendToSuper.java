@@ -7,39 +7,19 @@ package ast;
 
 public class MessageSendToSuper extends MessageSend {
 
-    Method method;
+    private Method method;
     private KraClass to;
     private KraClass from;
+    private String variableName;
+    private ExprList exprList;
 
-    public MessageSendToSuper( KraClass to, KraClass from, Method method ) {
+    public MessageSendToSuper( KraClass to, KraClass from, Method method, String variableName, ExprList exprList ) {
         super();
         this.to = to;
         this.from = from;
         this.method = method;
-    }
-
-    public KraClass getTo() {
-        return to;
-    }
-
-    public void setTo( KraClass to ) {
-        this.to = to;
-    }
-
-    public KraClass getFrom() {
-        return from;
-    }
-
-    public void setFrom( KraClass from ) {
-        this.from = from;
-    }
-
-    public Method getMethod() {
-        return method;
-    }
-
-    public void setMethod( Method method ) {
-        this.method = method;
+        this.variableName = variableName;
+        this.exprList = exprList;
     }
 
     //TODO: Return correct type based on Variable or Method.
@@ -48,11 +28,16 @@ public class MessageSendToSuper extends MessageSend {
     }
 
     public void genC( PW pw, boolean putParenthesis ) {
+        int programRunFunctionNumber = to.getPublicMethodList().indexOf( method );
+        ParamList methodParameters = method.getParamList();
 
+        if ( putParenthesis )
+            pw.print( "_" + to.getName() + "_" + method.getName() + "( " + "(" + to.getCname() + " *)" + " this" );
+        else
+            pw.printIdent( "_" + to.getName() + "_" + method.getName() + "( " + "(" + to.getCname() + " *)" + " this" );
+        if ( exprList.getExprList().size() != 0 )
+            pw.print( ", " );
+        exprList.genC( pw );
+        pw.print( " )" );
     }
-
-    public void genKra() {
-        //System.out.println("super." + this.method.getName() + "();");
-    }
-
 }

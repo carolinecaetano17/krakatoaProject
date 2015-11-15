@@ -17,6 +17,10 @@ public class UnaryExpr extends Expr {
         this.op = op;
     }
 
+    public Symbol getOp() {
+        return op;
+    }
+
     @Override
     public void genC( PW pw, boolean putParenthesis ) {
         switch ( op ) {
@@ -27,7 +31,8 @@ public class UnaryExpr extends Expr {
                 pw.print( "-" );
                 break;
             case NOT:
-                pw.print( "!" );
+                if ( !putParenthesis )
+                    pw.print( "!" );
                 break;
             default:
                 pw.print( " internal error at UnaryExpr::genC" );

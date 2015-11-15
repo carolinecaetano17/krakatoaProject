@@ -258,10 +258,13 @@ public class Compiler {
                 if ( t == Type.voidType )
                     signalError.show( "Variables cannot be of type void." );
 
-                if ( isCurrentMemberStatic )
+                if ( isCurrentMemberStatic ) {
                     staticVariableList.join( instanceVarDec( t, name ) );
-                else
+                    newClass.setStaticVariableList( staticVariableList );
+                } else {
                     instanceVariableList.join( instanceVarDec( t, name ) );
+                    newClass.setInstanceVariableList( instanceVariableList );
+                }
             }
 
             //Resets the properties for the next member
@@ -970,7 +973,7 @@ public class Compiler {
             }
             for ( Variable v : currentClassStaticVariables.getInstanceVariableList() ) {
                 if ( v.getName().equals( secondId ) )
-                    return new MessageSendToVariable( currentClass, v );
+                    return new MessageSendToVariable( currentClass, v, true );
             }
             signalError.show( "Identifier " + secondId + " not found." );
             return null;
@@ -1289,7 +1292,7 @@ public class Compiler {
                     signalError.show( "Static methods cannot be called through super." );
                 } else {
                     checkParams( desiredMethod, exprList );
-                    return new MessageSendToSuper( desiredClass, this.currentClass, desiredMethod );
+                    return new MessageSendToSuper( desiredClass, this.currentClass, desiredMethod, "super", exprList );
                 }
                 break;
             case IDENT:
@@ -1406,7 +1409,7 @@ public class Compiler {
                                 return null;
                             } else {
                                 checkParams( desiredMethod, exprList );
-                                return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod );
+                                return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod, secondId, exprList );
                             }
 
 
@@ -1493,7 +1496,7 @@ public class Compiler {
                                 return null;
                             } else {
                                 checkParams( desiredMethod, exprList );
-                                return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod );
+                                return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod, firstId, exprList );
                             }
 
                         } else {
@@ -1509,7 +1512,7 @@ public class Compiler {
                             }
                             for ( Variable v : currentClassStaticVariables.getInstanceVariableList() ) {
                                 if ( v.getName().equals( secondId ) )
-                                    return new MessageSendToVariable( currentClass, v );
+                                    return new MessageSendToVariable( currentClass, v, true );
                             }
                             signalError.show( "Identifier " + secondId + " not found." );
                             return null;
@@ -1603,7 +1606,7 @@ public class Compiler {
                             return null;
                         } else {
                             checkParams( desiredMethod, exprList );
-                            return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod );
+                            return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod, "this", exprList );
                         }
                     } else if ( lexer.token == Symbol.DOT ) {
                         // "this" "." Id "." Id "(" [ ExpressionList ] ")"
@@ -1645,7 +1648,7 @@ public class Compiler {
                             return null;
                         } else {
                             checkParams( desiredMethod, exprList );
-                            return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod );
+                            return new MessageSendToClass( desiredClass, this.currentClass, desiredMethod, "this", exprList );
                         }
                     } else {
                         Variable messageReceptor = symbolTable.getInstanceVar( firstId );

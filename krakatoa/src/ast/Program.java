@@ -22,10 +22,6 @@ public class Program extends ASTNode {
         this.compilationErrorList = compilationErrorList;
     }
 
-
-    public void genKra( PW pw ) {
-    }
-
     public void genC( PW pw ) {
         int programRunFunctionNumber = -1;
 
@@ -68,15 +64,9 @@ public class Program extends ASTNode {
         pw.println( "}" );
     }
 
-    public ArrayList<KraClass> getClassList() {
-        return classList;
-    }
-
-
     public ArrayList<MetaobjectCall> getMetaobjectCallList() {
         return metaobjectCallList;
     }
-
 
     public boolean hasCompilationErrors() {
         return compilationErrorList != null && compilationErrorList.size() > 0;

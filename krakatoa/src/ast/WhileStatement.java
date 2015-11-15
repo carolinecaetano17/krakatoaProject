@@ -14,10 +14,6 @@ public class WhileStatement extends Statement {
         this.stmt = stmt;
     }
 
-    public Statement getStmt() {
-        return stmt;
-    }
-
     public void genC( PW pw ) {
         pw.printIdent( "while " );
         e.genC( pw, true );

@@ -54,11 +54,22 @@ public class CompositeExpr extends Expr {
         else
             pw.print( " " + strSymbol + " " );
 
+        //Precisamos converter para a classe certa
+        if ( left.getType() instanceof KraClass
+                && !left.getType().getName().equals( right.getType().getName() )
+                && oper == Symbol.ASSIGN )
+            pw.print( "(" + left.getType().getCname() + " *) " );
+
         if ( putParenthesis ) {
             right.genC( pw, true );
             pw.print( ")" );
         } else {
-            right.genC( pw, false );
+            //Somente para facilitar a leitura do arquivo .c
+            if ( right instanceof MessageSend ) {
+                right.genC( pw, true );
+            } else {
+                right.genC( pw, false );
+            }
             pw.println( ";" );
         }
 

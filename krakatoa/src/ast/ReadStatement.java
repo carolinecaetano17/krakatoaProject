@@ -15,14 +15,6 @@ public class ReadStatement extends Statement {
         this.readList = list;
     }
 
-    public ExprList getVarList() {
-        return readList;
-    }
-
-    public void setVarList( ExprList el ) {
-        this.readList = el;
-    }
-
     @Override
     public void genC( PW pw ) {
         ArrayList<Expr> expressions = readList.getExprList();
